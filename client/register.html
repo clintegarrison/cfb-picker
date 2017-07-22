@@ -11,26 +11,30 @@
   <script src="registerController.js"></script>
 </head>
 <body ng-app="cfbPicker" ng-controller="registerController" ng-cloak layout="column">
-  {{ 5 + 5 }}
-  this is a just a {{test}}
-
   <md-toolbar>
-    <h1>CFB Picker</h1>
+    <h1>Register</h1>
   </md-toolbar>
   <div class="container" layout="row" flex>
     <md-content flex>
       <section layout="column" layout-align="center center" layout-wrap>
         <md-input-container>
           <label>Username</label>
-          <input>
+          <input type="text" ng-model="user.userName">
+        </md-input-container>
+        <md-input-container>
+          <label>Email</label>
+          <input type="email" ng-model="user.email">
         </md-input-container>
         <md-input-container>
           <label>Password</label>
-          <input type="password">
+          <input type="password" ng-model="user.passwordOne">
+        </md-input-container>
+        <md-input-container>
+          <label>Re-enter Password</label>
+          <input type="password" ng-model="user.passwordTwo">
         </md-input-container>
         <section layout="row">
-          <md-button class="md-raised md-primary">Login</md-button>
-          <md-button class="md-raised md-primary" href="/register.html">Register</md-button>
+          <md-button class="md-raised md-primary" ng-click="register()">Register</md-button>
         </section>
       </section>
     </md-content>
