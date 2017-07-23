@@ -2,8 +2,13 @@ var express = require('express');
 var app = express();
 var path = require('path');
 var cookieParser = require('cookie-parser')
+var bodyParser = require('body-parser')
 
 app.use(cookieParser());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({
+  extended: true
+}));
 
 app.get('/', function(req, res) {
     console.log(req.cookies)
@@ -27,6 +32,9 @@ app.get('/', function(req, res) {
 });
 
 app.post('/register', function(req, res) {
+  console.log('regsiter service')
+  console.log(req.body)
+  res.send('sent')
 })
 
 app.use(express.static(path.resolve(".") + '/client'));

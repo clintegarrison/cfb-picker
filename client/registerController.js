@@ -2,7 +2,7 @@
 
 var app = angular.module("cfbPicker", ['ngMaterial'])
 
-app.controller("registerController", function($scope, $mdDialog) {
+app.controller("registerController", function($scope, $mdDialog, $http) {
     $scope.test = "test"
     $scope.user = {userName: "", email: "", passwordOne: "", passwordTwo: "", }
     $scope.register = function() {
@@ -12,6 +12,22 @@ app.controller("registerController", function($scope, $mdDialog) {
           $scope.showAlert()
           $scope.user.passwordOne = ""
           $scope.user.passwordTwo = ""
+        }else{
+          //Call the services
+          console.log(JSON.stringify($scope.user))
+
+          $http({
+            method: 'POST',
+            url: '/register',
+            data: JSON.stringify($scope.user),
+            headers: {'Content-Type': 'application/json'}
+          }).then(function successCallback(response) {
+              // this callback will be called asynchronously
+              // when the response is available
+            }, function errorCallback(response) {
+              // called asynchronously if an error occurs
+              // or server returns response with an error status.
+            });
         }
 
         console.log($scope.user)
