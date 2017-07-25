@@ -5,19 +5,21 @@
   <div class="container" layout="row" flex>
     <md-sidenav md-is-locked-open="true" class="md-whiteframe-4dp">
       <md-toolbar flex>
-        <md-toolbar-row ng-click="moneyLines()">
-          <span>Money Lines</span>
+        <md-toolbar-row>
+          <span>Total Lines</span>
         </md-toolbar-row>
         <md-toolbar-row>
           <span>Spreads</span>
         </md-toolbar-row>
+        <md-toolbar-row ng-click="moneyLines()">
+          <span>Money Lines</span>
+        </md-toolbar-row>
       </md-toolbar>
     </md-sidenav>
     <md-content flex>
-      <!-- {{moneyLines()}} -->
       <md-list>
         <md-list-item class="md-2-line" ng-repeat="ml in moneyLines">
-            {{ml.teamOne}} vs {{ml.teamTwo}}
+            {{ml.teamOne}} {{ml.moneyLineTeamOne}} vs {{ml.teamTwo}} {{ml.moneyLineTeamTwo}}
         </md-list-item>
       </md-list>
     </md-content>
