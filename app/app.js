@@ -13,4 +13,12 @@ app.config(function($routeProvider,$locationProvider){
     controller: 'registerController',
     templateUrl : "register.html"
   })
+  .when("/", {
+    controller: 'summaryController',
+    templateUrl : "summary.html"
+  })
+  .when("/moneyLines", {
+    controller: 'moneyLinesController',
+    templateUrl : "moneyLines.html"
+  })
 })
