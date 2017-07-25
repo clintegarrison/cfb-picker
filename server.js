@@ -12,7 +12,14 @@ app.use(bodyParser.urlencoded({
 
 app.use(express.static(__dirname + '/app'));
 
+app.post('/register', function(req, res, next) {
+    console.log('register:',req.body)
+    res.send('registered')
+});
+
 app.all('/*', function(req, res, next) {
+    var cookie = req.cookies.authenticatedUser;
+    console.log('cookie:',cookie)
     res.sendFile(path.join(__dirname,"app/index.html"));
 });
 

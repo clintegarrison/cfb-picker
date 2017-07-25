@@ -1,6 +1,6 @@
 'use strict'
 
-var app = angular.module("cfbPicker", ['ngMaterial'])
+var app = angular.module("cfbPicker")
 
 app.controller("registerController", function($scope, $mdDialog, $http) {
     $scope.test = "test"
