@@ -18,8 +18,13 @@
     </md-sidenav>
     <md-content flex>
       <md-list>
-        <md-list-item class="md-2-line" ng-repeat="ml in moneyLines">
+        <md-list-item ng-repeat="ml in moneyLines">
+          <md-button class="md-raised md-primary" ng-click="register()">
+            Pick
+          </md-button>
+          <span>
             {{ml.teamOne}} {{ml.moneyLineTeamOne}} vs {{ml.teamTwo}} {{ml.moneyLineTeamTwo}}
+          </span>
         </md-list-item>
       </md-list>
     </md-content>
