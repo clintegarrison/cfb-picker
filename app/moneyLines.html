@@ -1,32 +1,10 @@
-<div layout="column">
-  <md-toolbar>
-    <h1>CFB Picker</h1>
-  </md-toolbar>
-  <div class="container" layout="row" flex>
-    <md-sidenav md-is-locked-open="true" class="md-whiteframe-4dp">
-      <md-toolbar flex>
-        <md-toolbar-row>
-          <span>Total Lines</span>
-        </md-toolbar-row>
-        <md-toolbar-row>
-          <span>Spreads</span>
-        </md-toolbar-row>
-        <md-toolbar-row ng-click="moneyLines()">
-          <span>Money Lines</span>
-        </md-toolbar-row>
-      </md-toolbar>
-    </md-sidenav>
-    <md-content flex>
-      <md-list>
-        <md-list-item ng-repeat="ml in moneyLines">
-          <md-button class="md-raised md-primary" ng-click="register()">
-            Pick
-          </md-button>
-          <span>
-            {{ml.teamOne}} {{ml.moneyLineTeamOne}} vs {{ml.teamTwo}} {{ml.moneyLineTeamTwo}}
-          </span>
-        </md-list-item>
-      </md-list>
-    </md-content>
-  </div>
-</div>
+<md-list>
+  <md-list-item ng-repeat="ml in moneyLines">
+    <md-button class="md-raised md-primary" ng-click="register()">
+      Pick
+    </md-button>
+    <span>
+      {{ml.teamOne}} {{ml.moneyLineTeamOne}} vs {{ml.teamTwo}} {{ml.moneyLineTeamTwo}}
+    </span>
+  </md-list-item>
+</md-list>
