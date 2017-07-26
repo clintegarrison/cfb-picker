@@ -1,6 +1,6 @@
 var app = angular.module("cfbPicker")
 
-app.controller("loginController", function ($scope) {
+app.controller("loginController", function ($scope, authService) {
     $scope.greeting = "Login Controller";
 
     $scope.register = function() {
@@ -9,6 +9,7 @@ app.controller("loginController", function ($scope) {
 
     $scope.login = function() {
         console.log('login')
+        authService.setUserAuthenticated(true)
         // if($scope.user.passwordOne !== $scope.user.passwordTwo){
         //   console.log('p nope')
         //   $scope.showAlert()

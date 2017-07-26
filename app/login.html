@@ -1,23 +1,14 @@
-<div>
-  <md-toolbar>
-    <h1>Login</h1>
-  </md-toolbar>
-  <div class="container" layout="row" flex>
-    <md-content flex>
-      <section layout="column" layout-align="center center" layout-wrap>
-        <md-input-container>
-          <label>Username</label>
-          <input type="text" ng-model="user.userName">
-        </md-input-container>
-        <md-input-container>
-          <label>Password</label>
-          <input type="password" ng-model="user.passwordOne">
-        </md-input-container>
-        <section layout="row">
-          <md-button class="md-raised md-primary" ng-click="login()">Login</md-button>
-          <md-button class="md-raised md-primary" ng-click="register()">Register</md-button>
-        </section>
-      </section>
-    </md-content>
-  </div>
-</div>
+<section layout="column" layout-align="center center" layout-wrap>
+  <md-input-container>
+    <label>Username</label>
+    <input type="text" ng-model="user.userName">
+  </md-input-container>
+  <md-input-container>
+    <label>Password</label>
+    <input type="password" ng-model="user.passwordOne">
+  </md-input-container>
+  <section layout="row">
+    <md-button class="md-raised md-primary" ng-click="login()">Login</md-button>
+    <md-button class="md-raised md-primary" ng-click="register()">Register</md-button>
+  </section>
+</section>

@@ -20,7 +20,7 @@ app.post('/register', function(req, res, next) {
 app.all('/*', function(req, res, next) {
     var cookie = req.cookies.authenticatedUser;
     console.log('cookie:',cookie)
-    res.sendFile(path.join(__dirname,"app/index.html"));
+    res.sendFile(path.join(__dirname,"app/main.html"));
 });
 
 app.listen(process.env.PORT || 9090);

@@ -2,6 +2,18 @@
 
 var app = angular.module("cfbPicker", ['ngMaterial', 'ngRoute'])
 
+app.service('authService', function(){
+    var userIsAuthenticated = false;
+
+    this.setUserAuthenticated = function(value){
+      userIsAuthenticated = value;
+    };
+
+    this.getUserAuthenticated = function(){
+      return userIsAuthenticated;
+    };
+})
+
 app.config(function($routeProvider,$locationProvider){
   $locationProvider.html5Mode(true)
   $routeProvider
@@ -17,4 +29,21 @@ app.config(function($routeProvider,$locationProvider){
     controller: 'moneyLinesController',
     templateUrl : "moneyLines.html"
   })
+  .otherwise("/login", {
+    controller: 'loginController',
+    templateUrl : "login.html"
+  })
 })
+
+app.run(['$rootScope', '$location','authService', function($rootScope, $location, authService){
+  console.log('running')
+  console.log(authService.getUserAuthenticated())
+
+  $rootScope.$on('$routeChangeStart', function (event, next) {
+      if(!authService.getUserAuthenticated() && next.originalPath!==('/login')){
+        event.preventDefault();
+        $location.path('/login');
+      }
+  });
+
+}])
