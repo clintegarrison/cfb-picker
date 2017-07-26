@@ -5,7 +5,8 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "node server.js",
+    "redis": "node app/redis.js"
   },
   "repository": {
     "type": "git",
@@ -22,6 +23,7 @@
     "angular-material": "^1.1.4",
     "body-parser": "^1.17.2",
     "cookie-parser": "^1.4.3",
-    "express": "^4.15.3"
+    "express": "^4.15.3",
+    "redis": "^2.7.1"
   }
 }
