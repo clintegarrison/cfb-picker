@@ -1,7 +1,6 @@
 var app = angular.module("cfbPicker")
 
-app.controller("summaryController", function ($scope, $http, $location) {
-    $scope.greeting = "Summary Controller";
+app.controller("mainController", function ($scope, $http, $location) {
 
     $scope.navigateTo = function ( path ) {
       console.log('nav')

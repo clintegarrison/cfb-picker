@@ -10,9 +10,21 @@ function setKeyValue(key, value){
 function getValueByKey(key, callback){
   client.get(key, function (err, reply) {
     if(err){
-      throw err
+      callback(null, err)
     }else{
-      callback(reply.toString())
+      console.log(reply)
+      if(reply!==null){
+        callback(reply.toString(), null)
+      }else{
+        callback(null, "not found")
+      }
     }
   });
 }
+
+var redisManager = {
+	setKeyValue: setKeyValue,
+	getValueByKey: getValueByKey
+}
+
+module.exports = redisManager;
