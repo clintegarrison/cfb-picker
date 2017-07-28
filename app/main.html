@@ -14,12 +14,12 @@
 </head>
 <body ng-app="cfbPicker" ng-cloak  ng-controller="mainController">
   <div layout="column">
-    <md-toolbar>
+    <md-toolbar ng-click="navigateTo('/home')">
       <h1>CFB Picker</h1>
     </md-toolbar>
     <div class="container" layout="row" flex>
       <md-sidenav md-is-locked-open="true" class="md-whiteframe-4dp" style="height:100%">
-        <md-toolbar flex>
+        <md-toolbar flex ng-show="isAuthenticated()">
           <md-toolbar-row>
             <span>Total Lines</span>
           </md-toolbar-row>
@@ -46,6 +46,7 @@
   <script src="moneyLinesController.js"></script>
   <script src="alertService.js"></script>
   <script src="authService.js"></script>
+  <script src="homeController.js"></script>
   <style>
   /*.ng-scope { height: 100%; }*/
   </style>

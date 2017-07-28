@@ -19,6 +19,7 @@ app.config(function($routeProvider,$locationProvider){
     templateUrl : "moneyLines.html"
   })
   .when("/home", {
+    controller: 'homeController',
     templateUrl : "home.html"
   })
   .otherwise("/login", {
