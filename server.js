@@ -44,20 +44,6 @@ app.post('/authenticate', function(req, res, next) {
 });
 
 
-
-app.get('/getKey', function(req, res, next) {
-  redisManager.getValueByKey("user:asdfasdfasdfasd", function(value, error){
-    console.log('value:',value)
-    console.log('error:',error)
-    if(!error){
-      console.log(value)
-      res.send(value)
-    }else{
-      res.status(401).send('Not Logged In')
-    }
-  });
-});
-
 app.all('/*', function(req, res, next) {
     var cookie = req.cookies.authenticatedUser;
     console.log('cookie:',cookie)
