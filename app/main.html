@@ -23,7 +23,7 @@
           <md-toolbar-row>
             <span>Total Lines</span>
           </md-toolbar-row>
-          <md-toolbar-row>
+          <md-toolbar-row ng-click="navigateTo('/spreads')">
             <span>Spreads</span>
           </md-toolbar-row>
           <md-toolbar-row ng-click="navigateTo('/moneyLines')">
@@ -47,6 +47,9 @@
   <script src="alertService.js"></script>
   <script src="authService.js"></script>
   <script src="homeController.js"></script>
+  <script src="spreadsController.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="./css/myStyles.css">
   <style>
   /*.ng-scope { height: 100%; }*/
   </style>

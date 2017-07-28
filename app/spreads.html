@@ -1,0 +1,18 @@
+<md-list>
+  <md-list-item class="md-2-line" ng-repeat="spread in spreads">
+    <div class="md-list-item-text" layout="column" ng-class-odd="'odd'" ng-class-even="'even'">
+      <p>
+        <md-button class="md-raised md-primary">
+          Pick
+        </md-button>
+        {{spread.teamOne}} {{spread.spreadTeamOne}}
+      </p>
+      <p>
+        <md-button class="md-raised md-primary">
+        Pick
+      </md-button>
+      vs {{spread.teamTwo}} {{spread.spreadTeamTwo}}
+    </p>
+    </div>
+  </md-list-item>
+</md-list>
