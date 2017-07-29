@@ -1,6 +1,6 @@
 var app = angular.module("cfbPicker")
 
-app.controller("spreadsController", function ($scope, $http) {
+app.controller("spreadsController", function ($scope, $http, alertService) {
 
     $scope.getSpreads = function() {
         console.log('spreads')
@@ -13,6 +13,11 @@ app.controller("spreadsController", function ($scope, $http) {
           }, function errorCallback(response) {
             console.log(response)
           });
+    };
+
+    $scope.pickPrompt = function(pick) {
+        console.log('pick')
+        alertService.showAdvanced()
     };
 
     $scope.getSpreads();
