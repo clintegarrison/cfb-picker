@@ -23,7 +23,7 @@ app.config(function($routeProvider,$locationProvider){
     templateUrl : "home.html"
   })
   .when("/spreads", {
-    controller: 'spreadsController',
+    controller: 'picksController',
     templateUrl : "spreads.html"
   })
   .otherwise("/login", {
