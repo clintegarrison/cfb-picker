@@ -1,6 +1,6 @@
 var app = angular.module("cfbPicker")
 
-app.controller("picksController", function ($scope, $http, $mdDialog) {
+app.controller("picksController", function ($scope, $http, $mdDialog, authService) {
 
   console.log('picksController - HERE')
 
@@ -17,7 +17,8 @@ app.controller("picksController", function ($scope, $http, $mdDialog) {
     var pick = {
       "pickType": $scope.pickType,
       "pickTeam": $scope.pickTeam,
-      "pickNumber": $scope.pickNumber
+      "pickNumber": $scope.pickNumber,
+      "userName": authService.getUserName()
     }
 
     $http({

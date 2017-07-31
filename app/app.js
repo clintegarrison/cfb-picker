@@ -26,6 +26,10 @@ app.config(function($routeProvider,$locationProvider){
     controller: 'picksController',
     templateUrl : "spreads.html"
   })
+  .when("/picks", {
+    controller: 'myPicksController',
+    templateUrl : "myPicks.html"
+  })
   .otherwise("/login", {
     controller: 'loginController',
     templateUrl : "login.html"

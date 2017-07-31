@@ -44,8 +44,8 @@ app.post('/authenticate', function(req, res, next) {
 });
 
 app.get('/getPicks', function(req, res, next) {
-    console.log('picks:',req.body)
-    redisManager.getList('user:clint:picks', function(value, error){
+    console.log('picks:',req.query)
+    redisManager.getList('user:'+ req.query.userName +':picks', function(value, error){
       console.log('value:',value)
       console.log('error:',error)
       if(!error){
@@ -58,8 +58,7 @@ app.get('/getPicks', function(req, res, next) {
 
 app.post('/makePick', function(req, res, next) {
     console.log('picks:',req.body)
-    // var key = "user:" + req.body.userName + ":picks";
-    var key = "user:clint:picks";
+    var key = 'user:'+ req.body.userName +':picks';
     var value = {
       "pickType": req.body.pickType,
       "pickTeam": req.body.pickTeam,

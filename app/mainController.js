@@ -10,4 +10,7 @@ app.controller("mainController", function ($scope, $location, authService) {
     $scope.isAuthenticated = function(){
       return authService.getUserAuthenticated()
     }
+
+    $scope.userName = authService.getUserName();
+
 });

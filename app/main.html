@@ -19,8 +19,9 @@
     <md-toolbar class="md-hue-2 header">
       <div class="md-toolbar-tools">
 
-        <h2 flex md-truncate>CFB Picker</h2>
+        <h2 flex md-truncate>CFB Picker - {{userName}}</h2>
 
+        <md-button class="md-raised" ng-click="navigateTo('/picks')">Picks</md-button>
         <md-button class="md-raised" ng-click="navigateTo('/spreads')">Spreads</md-button>
 
       </div>
@@ -42,6 +43,7 @@
   <script src="authService.js"></script>
   <script src="homeController.js"></script>
   <script src="picksController.js"></script>
+  <script src="myPicksController.js"></script>
 
   <link rel="stylesheet" type="text/css" href="./css/myStyles.css">
   <style>

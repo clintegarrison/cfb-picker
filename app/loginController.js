@@ -26,6 +26,7 @@ app.controller("loginController", function ($scope, authService, $location, aler
             headers: {'Content-Type': 'application/json'}
           }).then(function successCallback(response) {
               authService.setUserAuthenticated(true)
+              authService.setUserName($scope.userName)
               console.log('authed')
               $location.path('/home')
             }, function errorCallback(response) {
