@@ -17,13 +17,15 @@
 <body ng-app="cfbPicker">
   <div ng-controller="mainController" layout="column" ng-cloak>
     <md-toolbar class="md-hue-2 header">
-      <div class="md-toolbar-tools">
+      <div class="md-toolbar-tools" layout="column">
 
         <h2 flex md-truncate>CFB Picker - {{userName}}</h2>
-
-        <md-button class="md-raised" ng-click="navigateTo('/picks')">Picks</md-button>
-        <md-button class="md-raised" ng-click="navigateTo('/spreads')">Spreads</md-button>
-
+        <br>
+        <div layout="row">
+          <md-button class="md-raised" ng-click="navigateTo('/myPicks')">Picks</md-button>
+          <md-button class="md-raised" ng-click="navigateTo('/spreads')">Spreads</md-button>
+          <md-button class="md-raised" ng-click="navigateTo('/moneyLines')">MoneyLines</md-button>
+      </div>
       </div>
     </md-toolbar>
 
@@ -38,7 +40,6 @@
   <script src="registerController.js"></script>
   <script src="loginController.js"></script>
   <script src="mainController.js"></script>
-  <script src="moneyLinesController.js"></script>
   <script src="alertService.js"></script>
   <script src="authService.js"></script>
   <script src="homeController.js"></script>

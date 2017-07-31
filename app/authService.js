@@ -1,9 +1,9 @@
 var app = angular.module("cfbPicker")
 
 app.service('authService', function(){
-    var userIsAuthenticated = false;
+    var userIsAuthenticated = true;
 
-    var userName = ''
+    var userName = 'roy'
 
     this.setUserAuthenticated = function(value){
       userIsAuthenticated = value;

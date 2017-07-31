@@ -26,7 +26,11 @@ app.config(function($routeProvider,$locationProvider){
     controller: 'picksController',
     templateUrl : "spreads.html"
   })
-  .when("/picks", {
+  .when("/moneyLines", {
+    controller: 'picksController',
+    templateUrl : "moneyLines.html"
+  })
+  .when("/myPicks", {
     controller: 'myPicksController',
     templateUrl : "myPicks.html"
   })

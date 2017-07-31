@@ -1,10 +1,18 @@
 <md-list>
-  <md-list-item ng-repeat="ml in moneyLines">
-    <md-button class="md-raised md-primary" ng-click="register()">
-      Pick
-    </md-button>
-    <span>
-      {{ml.teamOne}} {{ml.moneyLineTeamOne}} vs {{ml.teamTwo}} {{ml.moneyLineTeamTwo}}
-    </span>
+  <md-list-item class="md-2-line" ng-repeat="ml in moneyLines" >
+    <div class="md-list-item-text" layout="column" ng-class-odd="'odd'" ng-class-even="'even'">
+      <p>
+        <md-button class="md-raised md-primary" ng-click="pickPrompt('moneyLine',ml.teamOne, ml.moneyLineTeamOne)">
+          Pick
+        </md-button>
+        {{ml.teamOne}} {{ml.moneyLineTeamOne}}
+      </p>
+      <p>
+        <md-button class="md-raised md-primary" ng-click="pickPrompt('moneyLine',ml.teamTwo, ml.moneyLineTeamTwo)">
+        Pick
+      </md-button>
+      vs {{ml.teamTwo}} {{ml.moneyLineTeamTwo}}
+    </p>
+    </div>
   </md-list-item>
 </md-list>
