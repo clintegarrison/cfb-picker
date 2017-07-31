@@ -22,9 +22,25 @@ function getValueByKey(key, callback){
   });
 }
 
+function addToList(key, value){
+  client.lpush(key, value);
+}
+
+function getList(key, callback){
+  client.lrange(key, 0, -1, function (err, items) {
+    if(err){
+      callback(null, err)
+    }else{
+      callback(items, null)
+    }
+  })
+}
+
 var redisManager = {
 	setKeyValue: setKeyValue,
-	getValueByKey: getValueByKey
+	getValueByKey: getValueByKey,
+  addToList: addToList,
+  getList: getList
 }
 
 module.exports = redisManager;

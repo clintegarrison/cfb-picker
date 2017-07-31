@@ -9,11 +9,27 @@ app.controller("picksController", function ($scope, $http, $mdDialog) {
     };
 
   $scope.parlay = function() {
-    console.log('parlay',$scope.currentPick)
+    console.log('parlay')
   }
 
   $scope.confirm = function() {
     console.log('confirm')
+    var pick = {
+      "pickType": $scope.pickType,
+      "pickTeam": $scope.pickTeam,
+      "pickNumber": $scope.pickNumber
+    }
+
+    $http({
+      method: 'POST',
+      url: '/makePick',
+      data: JSON.stringify(pick),
+      headers: {'Content-Type': 'application/json'}
+    }).then(function successCallback(response) {
+        $mdDialog.cancel()
+      }, function errorCallback(response) {
+
+    });
   }
 
   $scope.getSpreads = function() {
@@ -31,9 +47,12 @@ app.controller("picksController", function ($scope, $http, $mdDialog) {
 
 
 
-  $scope.pickPrompt = function(pick) {
-      console.log('pick', pick)
-      $scope.currentPick=pick
+  $scope.pickPrompt = function(pickType, pickTeam, pickNumber) {
+      console.log('pickType:', pickType,' pickTeam:', pickTeam,' pickNumber:', pickNumber)
+      $scope.pickType=pickType
+      $scope.pickTeam=pickTeam
+      $scope.pickNumber=pickNumber
+
       $mdDialog.show({
         controller: () => this,
         controllerAs: 'sharedPicksController',

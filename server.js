@@ -43,6 +43,32 @@ app.post('/authenticate', function(req, res, next) {
     })
 });
 
+app.get('/getPicks', function(req, res, next) {
+    console.log('picks:',req.body)
+    redisManager.getList('user:clint:picks', function(value, error){
+      console.log('value:',value)
+      console.log('error:',error)
+      if(!error){
+        res.send(value)
+      }else{
+        res.status(500).send(value)
+      }
+    })
+});
+
+app.post('/makePick', function(req, res, next) {
+    console.log('picks:',req.body)
+    // var key = "user:" + req.body.userName + ":picks";
+    var key = "user:clint:picks";
+    var value = {
+      "pickType": req.body.pickType,
+      "pickTeam": req.body.pickTeam,
+      "pickNumber": req.body.pickNumber
+    }
+    redisManager.addToList(key, JSON.stringify(value))
+    res.send('pick made')
+});
+
 
 app.all('/*', function(req, res, next) {
     var cookie = req.cookies.authenticatedUser;
