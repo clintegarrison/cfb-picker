@@ -8,23 +8,22 @@ app.controller("picksController", function ($scope, $http, $mdDialog, authServic
       $mdDialog.cancel();
     };
 
-  $scope.parlay = function() {
-    console.log('parlay')
+  $scope.parlay = function(pickAmount) {
+    console.log('parlay', pickAmount)
   }
 
-  $scope.confirm = function() {
-    console.log('confirm')
-    var pick = {
-      "pickType": $scope.pickType,
-      "pickTeam": $scope.pickTeam,
-      "pickNumber": $scope.pickNumber,
-      "userName": authService.getUserName()
-    }
+  $scope.confirm = function(pickAmount) {
+
+    $scope.pick.userName = authService.getUserName()
+    $scope.pick.timestamp = new Date().toJSON()
+    $scope.pick.pickAmount = pickAmount
+
+    console.log($scope.pick)
 
     $http({
       method: 'POST',
       url: '/makePick',
-      data: JSON.stringify(pick),
+      data: JSON.stringify($scope.pick),
       headers: {'Content-Type': 'application/json'}
     }).then(function successCallback(response) {
         $mdDialog.cancel()
@@ -47,26 +46,24 @@ app.controller("picksController", function ($scope, $http, $mdDialog, authServic
   };
 
 
+  $scope.selectPick = function(pickType, pickTeam, pickNumber, opponentTeam, opponentNumber){
+    console.log('selectPick')
+    $scope.pick = {
+      'pickType': pickType,
+      'pickTeam': pickTeam,
+      'pickNumber': pickNumber,
+      'opponentTeam': opponentTeam,
+      'opponentNumber': opponentNumber
+    }
 
-  $scope.pickPrompt = function(pickType, pickTeam, pickNumber) {
-      console.log('pickType:', pickType,' pickTeam:', pickTeam,' pickNumber:', pickNumber)
-      $scope.pickType=pickType
-      $scope.pickTeam=pickTeam
-      $scope.pickNumber=pickNumber
-
-      $mdDialog.show({
-        controller: () => this,
-        controllerAs: 'sharedPicksController',
-        templateUrl: 'dialogPicks.html',
-        parent: angular.element(document.body),
-        clickOutsideToClose:true
-      })
-      .then(function(answer) {
-        //$scope.status = 'You said the information was "' + answer + '".';
-      }, function() {
-        //$scope.status = 'You cancelled the dialog.';
-      });
-  };
+    $mdDialog.show({
+      controller: () => this,
+      controllerAs: 'sharedPicksController',
+      templateUrl: 'dialogPicks.html',
+      parent: angular.element(document.body),
+      clickOutsideToClose:true
+    })
+  }
 
   $scope.moneyLines = function() {
       console.log('moneyLines')
@@ -81,7 +78,10 @@ app.controller("picksController", function ($scope, $http, $mdDialog, authServic
         });
   };
 
-  $scope.moneyLines();
+  $scope.init = function(){
+    $scope.moneyLines()
+    $scope.getSpreads()
+  }
 
-  $scope.getSpreads();
+  $scope.init()
 })

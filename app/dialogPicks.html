@@ -3,20 +3,16 @@
   <section layout="row">
     <md-input-container>
       <label>Wager Amont</label>
-      <md-select style="width:120px" ng-model="pick.amount">
-        <md-option value="110">
-          110
-        </md-option>
-        <md-option value="220">
-          220
-        </md-option>
+      <md-select style="width:120px" ng-model="pickAmount">
+        <md-option ng-selected="true" value="110">110</md-option>
+        <md-option value="220">220</md-option>
       </md-select>
     </md-input-container>
-    <md-button class="md-raised md-primary" ng-click="sharedPicksController.confirm()">Confirm</md-button>
+    <md-button class="md-raised md-primary" ng-click="sharedPicksController.confirm(pickAmount)">Confirm</md-button>
   </section>
   <p style="text-align:center">OR</p>
   <section layout="row">
-    <md-button class="md-raised md-primary" ng-click="sharedPicksController.parlay()">Parlay</md-button>
+    <md-button class="md-raised md-primary" ng-click="sharedPicksController.parlay(pickAmount)">Parlay</md-button>
     <md-button class="md-raised md-primary" ng-click="sharedPicksController.cancel()" >Cancel</md-button>
   </section>
 </div>
