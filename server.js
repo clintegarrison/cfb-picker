@@ -59,12 +59,8 @@ app.get('/getPicks', function(req, res, next) {
 app.post('/makePick', function(req, res, next) {
     console.log('picks:',req.body)
     var key = 'user:'+ req.body.userName +':picks';
-    var value = {
-      "pickType": req.body.pickType,
-      "pickTeam": req.body.pickTeam,
-      "pickNumber": req.body.pickNumber
-    }
-    redisManager.addToList(key, JSON.stringify(value))
+
+    redisManager.addToList(key, JSON.stringify(req.body))
     res.send('pick made')
 });
 

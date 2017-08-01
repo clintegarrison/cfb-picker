@@ -1,2 +1,9 @@
-<p>these are my picks</p>
-{{myPicks}}
+<md-list>
+  <md-list-item class="md-2-line" ng-repeat="pick in myPicks" >
+    <div class="md-list-item-text" layout="column" ng-class-odd="'odd'" ng-class-even="'even'">
+      <p>
+        {{pick.pickValue}}
+      </p>
+    </div>
+  </md-list-item>
+</md-list>
