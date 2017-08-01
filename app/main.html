@@ -18,13 +18,18 @@
   <div ng-controller="mainController" layout="column" ng-cloak>
     <md-toolbar class="md-hue-2 header">
       <div class="md-toolbar-tools" layout="column">
-
-        <h2 flex md-truncate>CFB Picker - {{userName}}</h2>
-        <br>
+        <div>
+          <h1 flex md-truncate style="font-size: 150%; margin-bottom: 14px; margin-top: 7px;">CFB Picker - {{userName}}</h1>
+        </div>
         <div layout="row">
-          <md-button class="md-raised" ng-click="navigateTo('/myPicks')">Picks</md-button>
+          <md-button class="md-raised" ng-click="navigateTo('/myPicks')">My Picks</md-button>
+          <md-button class="md-raised" ng-click="">Standings</md-button>
+        </div>
+        <br><br>
+        <div layout="row">
           <md-button class="md-raised" ng-click="navigateTo('/spreads')">Spreads</md-button>
           <md-button class="md-raised" ng-click="navigateTo('/moneyLines')">MoneyLines</md-button>
+          <md-button class="md-raised" ng-click="">Totals</md-button>
       </div>
       </div>
     </md-toolbar>

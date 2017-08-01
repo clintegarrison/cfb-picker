@@ -3,9 +3,9 @@
 }
 .header{
   position:fixed !important;
-  height: 75px;
+  height: 150px;
 }
 
 .content{
-  margin-top: 75px;
+  margin-top: 150px;
 }

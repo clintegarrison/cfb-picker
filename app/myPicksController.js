@@ -12,9 +12,8 @@ app.controller("myPicksController", function ($scope, $http, authService) {
         data: JSON.stringify(pick),
         headers: {'Content-Type': 'application/json'}
       }).then(function successCallback(response) {
-
+          $scope.getMyPicks()
         }, function errorCallback(response) {
-          // alertService.showAlert('Invalid credentials')
         });
     }
 
