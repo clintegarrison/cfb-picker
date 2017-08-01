@@ -26,6 +26,10 @@ function addToList(key, value){
   client.lpush(key, value);
 }
 
+function removeFromList(key, value){
+  client.lrem(key, 0, value);
+}
+
 function getList(key, callback){
   client.lrange(key, 0, -1, function (err, items) {
     if(err){
@@ -40,7 +44,8 @@ var redisManager = {
 	setKeyValue: setKeyValue,
 	getValueByKey: getValueByKey,
   addToList: addToList,
-  getList: getList
+  getList: getList,
+  removeFromList: removeFromList
 }
 
 module.exports = redisManager;

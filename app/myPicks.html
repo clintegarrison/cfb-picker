@@ -1,8 +1,11 @@
 <md-list>
   <md-list-item class="md-2-line" ng-repeat="pick in myPicks" >
-    <div class="md-list-item-text" layout="column" ng-class-odd="'odd'" ng-class-even="'even'">
+    <div class="md-list-item-text" layout="row" ng-class-odd="'odd'" ng-class-even="'even'">
+      <md-button class="md-raised md-primary" ng-click="delete(pick.originalPick)">
+        Delete
+      </md-button>
       <p>
-        {{pick.pickValue}}
+        {{pick.prettyPrint}}
       </p>
     </div>
   </md-list-item>

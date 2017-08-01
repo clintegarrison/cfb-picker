@@ -3,6 +3,21 @@ var app = angular.module("cfbPicker")
 app.controller("myPicksController", function ($scope, $http, authService) {
     console.log('mpc')
 
+    $scope.delete = function(pick){
+      console.log('delete:',pick)
+
+      $http({
+        method: 'POST',
+        url: '/deletePick',
+        data: JSON.stringify(pick),
+        headers: {'Content-Type': 'application/json'}
+      }).then(function successCallback(response) {
+
+        }, function errorCallback(response) {
+          // alertService.showAlert('Invalid credentials')
+        });
+    }
+
     $scope.getMyPicks = function() {
         console.log('picks')
         $http({
@@ -21,6 +36,9 @@ app.controller("myPicksController", function ($scope, $http, authService) {
                   stringPick += jsonPick.pickNumber
                   stringPick += ' against '
                   stringPick += jsonPick.opponentTeam
+                  stringPick += ' for '
+                  stringPick += jsonPick.pickAmount
+                  stringPick += ' credits. '
                 }else if(jsonPick.pickType==="moneyLine"){
                   stringPick += response.data[i]
                 }else{
@@ -28,7 +46,8 @@ app.controller("myPicksController", function ($scope, $http, authService) {
                 }
                 var newJsonPick = {
                   pickNumber: i,
-                  pickValue: stringPick
+                  prettyPrint: stringPick,
+                  originalPick: jsonPick
                 }
                 $scope.myPicks.push(newJsonPick);
             }

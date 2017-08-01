@@ -64,6 +64,13 @@ app.post('/makePick', function(req, res, next) {
     res.send('pick made')
 });
 
+app.post('/deletePick', function(req, res, next) {
+    console.log('pick to delete:',req.body)
+    var key = 'user:'+ req.body.userName +':picks';
+    redisManager.removeFromList(key, JSON.stringify(req.body))
+    res.send('pick deleted')
+});
+
 
 app.all('/*', function(req, res, next) {
     var cookie = req.cookies.authenticatedUser;
