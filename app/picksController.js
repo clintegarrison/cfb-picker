@@ -48,12 +48,32 @@ app.controller("picksController", function ($scope, $http, $mdDialog, authServic
       }).then(function successCallback(response) {
           $mdDialog.cancel()
         }, function errorCallback(response) {
-
+          $mdDialog.cancel()
       });
     }else{
       console.log('confrim parlay')
+
+      var parylayPick = {
+        pickType: "parlay",
+        pickAmount: pickAmount,
+        userName: authService.getUserName(),
+        parlays:  $scope.parlays
+      }
+
+      console.log('parylayPick', parylayPick)
+
+      $http({
+        method: 'POST',
+        url: '/makePick',
+        data: JSON.stringify(parylayPick),
+        headers: {'Content-Type': 'application/json'}
+      }).then(function successCallback(response) {
+          $mdDialog.cancel()
+        }, function errorCallback(response) {
+          $mdDialog.cancel()
+      });
+
       $scope.parlays = []
-      $mdDialog.cancel()
     }
   }
 

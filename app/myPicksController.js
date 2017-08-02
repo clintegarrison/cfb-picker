@@ -40,6 +40,23 @@ app.controller("myPicksController", function ($scope, $http, authService) {
                   stringPick += ' credits. '
                 }else if(jsonPick.pickType==="moneyLine"){
                   stringPick += response.data[i]
+                }else if(jsonPick.pickType==="parlay"){
+                  var parlays = jsonPick.parlays
+                  stringPick += jsonPick.parlays.length
+                  stringPick += ' way parlay for '
+                  stringPick += jsonPick.pickAmount
+                  stringPick += ' credits. \n'
+                  for(x = 0; x <jsonPick.parlays.length; x++){
+                    if(jsonPick.parlays[x].pickType==="spread"){
+                      stringPick += ' - '
+                      stringPick += jsonPick.parlays[x].pickTeam
+                      stringPick += ' to cover '
+                      stringPick += jsonPick.parlays[x].pickNumber
+                      stringPick += ' against '
+                      stringPick += jsonPick.parlays[x].opponentTeam
+                      stringPick += '\n'
+                    }
+                  }
                 }else{
                   stringPick += response.data[i]
                 }
@@ -55,6 +72,7 @@ app.controller("myPicksController", function ($scope, $http, authService) {
           });
           console.log('$scope.myPicks:',$scope.myPicks)
     };
+
 
     $scope.getMyPicks();
 });
