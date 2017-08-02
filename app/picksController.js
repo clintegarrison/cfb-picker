@@ -107,7 +107,7 @@ app.controller("picksController", function ($scope, $http, $mdDialog, authServic
 
     console.log('parlays', $scope.parlays)
 
-    if(pickType==="moneyLine"){
+    if(pickType==="moneyLine" || $scope.parlays.length > 3){
       $scope.disableParlay = true
     }else{
       $scope.disableParlay = false
