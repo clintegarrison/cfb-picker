@@ -22,6 +22,7 @@ app.post('/register', function(req, res, next) {
       "email": req.body.email
     }
     redisManager.setKeyValue(key, JSON.stringify(value))
+    redisManager.setKeyValue(key + ":credits", 2500)
     res.send('registered')
 });
 
@@ -46,6 +47,19 @@ app.post('/authenticate', function(req, res, next) {
 app.get('/getPicks', function(req, res, next) {
     console.log('picks:',req.query)
     redisManager.getList('user:'+ req.query.userName +':picks', function(value, error){
+      console.log('value:',value)
+      console.log('error:',error)
+      if(!error){
+        res.send(value)
+      }else{
+        res.status(500).send(value)
+      }
+    })
+});
+
+app.get('/getCredits', function(req, res, next) {
+    console.log('getCredits:',req.query)
+    redisManager.getValueByKey('user:'+ req.query.userName +':credits', function(value, error){
       console.log('value:',value)
       console.log('error:',error)
       if(!error){

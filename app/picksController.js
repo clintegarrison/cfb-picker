@@ -34,14 +34,17 @@ app.controller("picksController", function ($scope, $http, $mdDialog, authServic
 
   $scope.getSpreads = function() {
       console.log('spreads')
+      $scope.isLoading = true
       $http({
         method: 'GET',
         url: 'https://odds-service.herokuapp.com/getSpreads'
       }).then(function successCallback(response) {
           console.log(response)
           $scope.spreads = response.data
+          $scope.isLoading = false
         }, function errorCallback(response) {
           console.log(response)
+          $scope.isLoading = false
         });
   };
 
@@ -55,6 +58,14 @@ app.controller("picksController", function ($scope, $http, $mdDialog, authServic
       'opponentTeam': opponentTeam,
       'opponentNumber': opponentNumber
     }
+    console.log($scope.pick)
+
+    if(pickType==="moneyLine"){
+      $scope.disableParlay = true
+    }else{
+      $scope.disableParlay = false
+    }
+    console.log('$scope.parlayEnabled:',$scope.disableParlay)
 
     $mdDialog.show({
       controller: () => this,
@@ -67,14 +78,17 @@ app.controller("picksController", function ($scope, $http, $mdDialog, authServic
 
   $scope.moneyLines = function() {
       console.log('moneyLines')
+      $scope.isLoading = true
       $http({
         method: 'GET',
         url: 'https://odds-service.herokuapp.com/getMoneyLines'
       }).then(function successCallback(response) {
           console.log(response)
           $scope.moneyLines = response.data
+          $scope.isLoading = false
         }, function errorCallback(response) {
           console.log(response)
+          $scope.isLoading = false
         });
   };
 
