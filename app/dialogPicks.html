@@ -1,5 +1,5 @@
 <div>
-  <p style="text-align:center">{{sharedPicksController.pickTeam}} {{sharedPicksController.pickNumber}}</p>
+  <p style="text-align:center">{{sharedPicksController.pick.pickTeam}} {{sharedPicksController.pick.pickNumber}}</p>
   <section layout="row">
     <md-input-container>
       <label>Wager Amont</label>
@@ -8,11 +8,23 @@
         <md-option value="220">220</md-option>
       </md-select>
     </md-input-container>
-    <md-button class="md-raised md-primary" ng-click="sharedPicksController.confirm(pickAmount)">Confirm</md-button>
+    <md-button class="md-raised md-primary" ng-click="sharedPicksController.confirm(pickAmount)">{{sharedPicksController.confirmText}}</md-button>
   </section>
   <p style="text-align:center">OR</p>
   <section layout="row">
     <md-button class="md-raised md-primary" ng-disabled="sharedPicksController.disableParlay" ng-click="sharedPicksController.parlay(pickAmount)">Parlay</md-button>
     <md-button class="md-raised md-primary" ng-click="sharedPicksController.cancel()" >Cancel</md-button>
+  </section>
+  <section layout="column">
+    <md-list-item ng-repeat="parlay in sharedPicksController.parlays" >
+      <div class="md-list-item-text" layout="row" ng-class-odd="'odd'" ng-class-even="'even'">
+        <md-button class="md-raised md-primary" ng-click="sharedPicksController.deleteParlayPick(parlay)">
+          Delete
+        </md-button>
+        <p>
+          {{parlay.pickTeam}} {{parlay.pickNumber}}
+        </p>
+      </div>
+    </md-list-item>
   </section>
 </div>

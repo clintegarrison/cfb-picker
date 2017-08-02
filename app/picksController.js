@@ -8,28 +8,53 @@ app.controller("picksController", function ($scope, $http, $mdDialog, authServic
       $mdDialog.cancel();
     };
 
-  $scope.parlay = function(pickAmount) {
-    console.log('parlay', pickAmount)
+  $scope.parlay = function() {
+    console.log('parlay', $scope.pick)
+    $scope.pick.userName = authService.getUserName()
+    $scope.pick.timestamp = new Date().toJSON()
+
+    $scope.parlays.push($scope.pick);
+    $scope.disableParlay = true
+
+    $scope.confirmText = 'Confirm Parlay'
+  }
+
+  $scope.deleteParlayPick = function(parlayPick){
+    var index = $scope.parlays.indexOf(parlayPick)
+    console.log('$scope.parlays size',$scope.parlays.length)
+    $scope.parlays.splice(index, 1)
+    if(parlayPick===$scope.pick){
+      $scope.disableParlay = false
+    }
+    if($scope.parlays.length===0){
+      $scope.confirmText = 'Confirm Pick'
+    }
   }
 
   $scope.confirm = function(pickAmount) {
 
-    $scope.pick.userName = authService.getUserName()
-    $scope.pick.timestamp = new Date().toJSON()
-    $scope.pick.pickAmount = pickAmount
+    if($scope.confirmText==='Confirm Pick'){
+      $scope.pick.userName = authService.getUserName()
+      $scope.pick.timestamp = new Date().toJSON()
+      $scope.pick.pickAmount = pickAmount
 
-    console.log($scope.pick)
+      console.log($scope.pick)
 
-    $http({
-      method: 'POST',
-      url: '/makePick',
-      data: JSON.stringify($scope.pick),
-      headers: {'Content-Type': 'application/json'}
-    }).then(function successCallback(response) {
-        $mdDialog.cancel()
-      }, function errorCallback(response) {
+      $http({
+        method: 'POST',
+        url: '/makePick',
+        data: JSON.stringify($scope.pick),
+        headers: {'Content-Type': 'application/json'}
+      }).then(function successCallback(response) {
+          $mdDialog.cancel()
+        }, function errorCallback(response) {
 
-    });
+      });
+    }else{
+      console.log('confrim parlay')
+      $scope.parlays = []
+      $mdDialog.cancel()
+    }
   }
 
   $scope.getSpreads = function() {
@@ -59,6 +84,8 @@ app.controller("picksController", function ($scope, $http, $mdDialog, authServic
       'opponentNumber': opponentNumber
     }
     console.log($scope.pick)
+
+    console.log('parlays', $scope.parlays)
 
     if(pickType==="moneyLine"){
       $scope.disableParlay = true
@@ -95,6 +122,8 @@ app.controller("picksController", function ($scope, $http, $mdDialog, authServic
   $scope.init = function(){
     $scope.moneyLines()
     $scope.getSpreads()
+    $scope.parlays = []
+    $scope.confirmText = 'Confirm Pick'
   }
 
   $scope.init()
