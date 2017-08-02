@@ -22,14 +22,14 @@
           <h1 flex md-truncate style="font-size: 118%; margin-bottom: 14px; margin-top: 7px;">CFB Picker - {{userName}}</h1>
         </div>
         <div layout="row">
-          <md-button class="md-raised" ng-click="navigateTo('/myPicks')">My Picks</md-button>
-          <md-button class="md-raised" ng-click="">Standings</md-button>
+          <md-button class="md-raised" ng-disabled="!isAuthenticated()" ng-click="navigateTo('/myPicks')">My Picks</md-button>
+          <md-button class="md-raised" ng-disabled="!isAuthenticated()" ng-click="">Standings</md-button>
         </div>
         <br><br>
         <div layout="row">
-          <md-button class="md-raised" ng-click="navigateTo('/spreads')">Spreads</md-button>
-          <md-button class="md-raised" ng-click="">Totals</md-button>
-          <md-button class="md-raised" ng-click="navigateTo('/moneyLines')">MoneyLines</md-button>
+          <md-button class="md-raised" ng-disabled="!isAuthenticated()" ng-click="navigateTo('/spreads')">Spreads</md-button>
+          <md-button class="md-raised" ng-disabled="!isAuthenticated()" ng-click="">Totals</md-button>
+          <md-button class="md-raised" ng-disabled="!isAuthenticated()" ng-click="navigateTo('/moneyLines')">MoneyLines</md-button>
       </div>
       </div>
     </md-toolbar>
