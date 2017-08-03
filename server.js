@@ -17,12 +17,17 @@ app.post('/register', function(req, res, next) {
     console.log('register:',req.body)
     var key = "user:" + req.body.userName;
     var value = {
-      "userName": req.body.userName,
-      "password": req.body.passwordOne,
-      "email": req.body.email
+      userName: req.body.userName,
+      password: req.body.passwordOne,
+      email: req.body.email
     }
     redisManager.setKeyValue(key, JSON.stringify(value))
-    redisManager.setKeyValue(key + ":credits", 2500)
+
+    var userCredits = {
+      userName: req.body.userName,
+      credits: 2500
+    }
+    redisManager.addToList('user:credits', JSON.stringify(userCredits))
     res.send('registered')
 });
 
@@ -58,15 +63,19 @@ app.get('/getPicks', function(req, res, next) {
 });
 
 app.get('/getCredits', function(req, res, next) {
-    console.log('getCredits:',req.query)
-    redisManager.getValueByKey('user:'+ req.query.userName +':credits', function(value, error){
-      console.log('value:',value)
-      console.log('error:',error)
-      if(!error){
-        res.send(value)
-      }else{
-        res.status(500).send(value)
-      }
+    console.log('testCreds:',req.query)
+    redisManager.getList('user:credits', function(value, error){
+
+        if(req.query.userName){
+          for(i=0; i<value.length; i++){
+            var parsedValue = JSON.parse(value[i])
+            if(parsedValue.userName===req.query.userName){
+              res.send(parsedValue)
+            }
+          }
+        }else{
+          res.send(value)
+        }
     })
 });
 

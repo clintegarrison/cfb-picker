@@ -23,7 +23,7 @@
         </div>
         <div layout="row">
           <md-button class="md-raised" ng-disabled="!isAuthenticated()" ng-click="navigateTo('/myPicks')">My Picks</md-button>
-          <md-button class="md-raised" ng-disabled="!isAuthenticated()" ng-click="">Standings</md-button>
+          <md-button class="md-raised" ng-disabled="!isAuthenticated()" ng-click="navigateTo('/standings')">Standings</md-button>
         </div>
         <br><br>
         <div layout="row">
@@ -50,6 +50,7 @@
   <script src="homeController.js"></script>
   <script src="picksController.js"></script>
   <script src="myPicksController.js"></script>
+  <script src="standingsController.js"></script>
 
   <link rel="stylesheet" type="text/css" href="./css/myStyles.css">
   <style>
