@@ -131,6 +131,24 @@ app.controller("picksController", function ($scope, $http, $mdDialog, authServic
         url: 'https://odds-service.herokuapp.com/getMoneyLines'
       }).then(function successCallback(response) {
           console.log(response)
+
+          $scope.moneyLines = [];
+          for (i = 0; i < response.data.length; i++) {
+              if(response.data[i].moneyLineTeamOne.indexOf('-') >= 0){
+                response.data[i].teamOneDisabled=true
+              }else{
+                response.data[i].teamOneDisabled=false
+              }
+
+              if(response.data[i].moneyLineTeamTwo.indexOf('-') >= 0){
+                response.data[i].teamTwoDisabled=true
+              }else{
+                response.data[i].teamTwoDisabled=false
+              }
+
+              $scope.moneyLines.push(response.data[i])
+          }
+
           $scope.moneyLines = response.data
           $scope.isLoading = false
         }, function errorCallback(response) {

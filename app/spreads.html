@@ -2,6 +2,7 @@
 <md-list>
   <md-list-item class="md-2-line" ng-repeat="spread in spreads" >
     <div class="md-list-item-text" layout="column" ng-class-odd="'odd'" ng-class-even="'even'">
+      <p align="center" style="margin-bottom: -5px;"> {{spread.gameTime}}</p>
       <p>
         <md-button class="md-raised md-primary" ng-click="selectPick('spread', spread.teamOne, spread.spreadTeamOne, spread.teamTwo, spread.spreadTeamTwo)">
           Pick
