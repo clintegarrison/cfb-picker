@@ -1,5 +1,14 @@
-<md-list>
-  <md-list-item ng-repeat="credit in credits" >
-    <p> {{credit.userName}} {{credit.credits}}</p>
-  </md-list-item>
-</md-list>
+<md-table-container>
+  <table style="width:100%;">
+    <tr align="left">
+      <th>Rank</th>
+      <th>User</th>
+      <th>Credits</th>
+    </tr>
+    <tr ng-repeat="credit in credits | orderBy: '-creditAmount'">
+      <td>{{$index + 1}}</td>
+      <td>{{credit.userName}} </td>
+      <td>{{credit.creditAmount}}</td>
+    </tr>
+  </table>
+</md-table-container>

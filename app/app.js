@@ -18,10 +18,6 @@ app.config(function($routeProvider,$locationProvider){
     controller: 'moneyLinesController',
     templateUrl : "moneyLines.html"
   })
-  .when("/home", {
-    controller: 'homeController',
-    templateUrl : "home.html"
-  })
   .when("/spreads", {
     controller: 'picksController',
     templateUrl : "spreads.html"
@@ -37,6 +33,9 @@ app.config(function($routeProvider,$locationProvider){
   .when("/standings", {
     controller: 'standingsController',
     templateUrl : "standings.html"
+  })
+  .when("/totals", {
+    templateUrl : "totals.html"
   })
   .otherwise("/login", {
     controller: 'loginController',

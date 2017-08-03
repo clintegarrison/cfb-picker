@@ -25,7 +25,7 @@ app.post('/register', function(req, res, next) {
 
     var userCredits = {
       userName: req.body.userName,
-      credits: 2500
+      creditAmount: 2500
     }
     redisManager.addToList('user:credits', JSON.stringify(userCredits))
     res.send('registered')

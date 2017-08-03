@@ -16,20 +16,20 @@
 </head>
 <body ng-app="cfbPicker">
   <div ng-controller="mainController" layout="column" ng-cloak>
-    <md-toolbar class="md-hue-2 header">
+    <md-toolbar class="header">
       <div class="md-toolbar-tools" layout="column">
         <div>
           <h1 flex md-truncate style="font-size: 118%; margin-bottom: 14px; margin-top: 7px;">CFB Picker - {{userName}}</h1>
         </div>
         <div layout="row">
-          <md-button class="md-raised" ng-disabled="!isAuthenticated()" ng-click="navigateTo('/myPicks')">My Picks</md-button>
-          <md-button class="md-raised" ng-disabled="!isAuthenticated()" ng-click="navigateTo('/standings')">Standings</md-button>
+          <md-button ng-class="myPicksButtonStyle" class="md-raised" ng-disabled="!isAuthenticated()" ng-click="navigateTo('/myPicks')">My Picks</md-button>
+          <md-button ng-class="standingsButtonStyle" class="md-raised" ng-disabled="!isAuthenticated()" ng-click="navigateTo('/standings')">Standings</md-button>
         </div>
         <br><br>
         <div layout="row">
-          <md-button class="md-raised" ng-disabled="!isAuthenticated()" ng-click="navigateTo('/spreads')">Spreads</md-button>
-          <md-button class="md-raised" ng-disabled="!isAuthenticated()" ng-click="">Totals</md-button>
-          <md-button class="md-raised" ng-disabled="!isAuthenticated()" ng-click="navigateTo('/moneyLines')">MoneyLines</md-button>
+          <md-button ng-class="spreadsButtonStyle" class="md-raised" ng-disabled="!isAuthenticated()" ng-click="navigateTo('/spreads')">Spreads</md-button>
+          <md-button ng-class="totalsButtonStyle" class="md-raised" ng-disabled="!isAuthenticated()" ng-click="navigateTo('/totals')">Totals</md-button>
+          <md-button ng-class="moneyLinesButtonStyle" class="md-raised" ng-disabled="!isAuthenticated()" ng-click="navigateTo('/moneyLines')">MoneyLines</md-button>
       </div>
       </div>
     </md-toolbar>
@@ -47,7 +47,6 @@
   <script src="mainController.js"></script>
   <script src="alertService.js"></script>
   <script src="authService.js"></script>
-  <script src="homeController.js"></script>
   <script src="picksController.js"></script>
   <script src="myPicksController.js"></script>
   <script src="standingsController.js"></script>

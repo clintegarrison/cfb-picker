@@ -28,7 +28,7 @@ app.controller("loginController", function ($scope, authService, $location, aler
               authService.setUserAuthenticated(true)
               authService.setUserName($scope.userName)
               console.log('authed')
-              $location.path('/home')
+              $scope.$parent.navigateTo('/standings')
             }, function errorCallback(response) {
               alertService.showAlert('Invalid credentials')
             });

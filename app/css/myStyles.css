@@ -9,3 +9,7 @@
 .content{
   margin-top: 150px;
 }
+
+.selectedButton{
+  background-color: #7e7d7d !important;
+}
