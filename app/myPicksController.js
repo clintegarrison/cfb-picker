@@ -39,7 +39,12 @@ app.controller("myPicksController", function ($scope, $http, authService) {
                   stringPick += jsonPick.pickAmount
                   stringPick += ' credits. '
                 }else if(jsonPick.pickType==="moneyLine"){
-                  stringPick += response.data[i]
+                  stringPick += jsonPick.pickTeam
+                  stringPick += ' ('
+                  stringPick += jsonPick.pickNumber
+                  stringPick += ') to win outright against '
+                  stringPick += jsonPick.opponentTeam
+                  stringPick += '\n'
                 }else if(jsonPick.pickType==="parlay"){
                   var parlays = jsonPick.parlays
                   stringPick += jsonPick.parlays.length
