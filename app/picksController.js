@@ -1,6 +1,6 @@
 var app = angular.module("cfbPicker")
 
-app.controller("picksController", function ($scope, $http, $mdDialog, authService) {
+app.controller("picksController", function ($scope, $http, $mdDialog, authService, parlayService) {
 
   console.log('picksController - HERE')
 
@@ -13,20 +13,19 @@ app.controller("picksController", function ($scope, $http, $mdDialog, authServic
     $scope.pick.userName = authService.getUserName()
     $scope.pick.timestamp = new Date().toJSON()
 
-    $scope.parlays.push($scope.pick);
+    parlayService.addParlay($scope.pick)
+
     $scope.disableParlay = true
 
     $scope.confirmText = 'Confirm Parlay'
   }
 
   $scope.deleteParlayPick = function(parlayPick){
-    var index = $scope.parlays.indexOf(parlayPick)
-    console.log('$scope.parlays size',$scope.parlays.length)
-    $scope.parlays.splice(index, 1)
+    parlayService.deleteParlayPick(parlayPick)
     if(parlayPick===$scope.pick){
       $scope.disableParlay = false
     }
-    if($scope.parlays.length===0){
+    if(parlayService.getParlays().length===0){
       $scope.confirmText = 'Confirm Pick'
     }
   }
@@ -57,7 +56,7 @@ app.controller("picksController", function ($scope, $http, $mdDialog, authServic
         pickType: "parlay",
         pickAmount: pickAmount,
         userName: authService.getUserName(),
-        parlays:  $scope.parlays
+        parlays:  parlayService.getParlays()
       }
 
       console.log('parylayPick', parylayPick)
@@ -73,7 +72,7 @@ app.controller("picksController", function ($scope, $http, $mdDialog, authServic
           $mdDialog.cancel()
       });
 
-      $scope.parlays = []
+      parlayService.clearAllParlays()
     }
   }
 
@@ -93,6 +92,31 @@ app.controller("picksController", function ($scope, $http, $mdDialog, authServic
         });
   };
 
+  $scope.getTotals = function() {
+      console.log('totals')
+      $scope.isLoading = true
+      $http({
+        method: 'GET',
+        url: 'https://odds-service.herokuapp.com/getTotals'
+      }).then(function successCallback(response) {
+          console.log(response)
+
+          $scope.totals = [];
+          for (i = 0; i < response.data.length; i++) {
+              if(response.data[i].totalPoints === ''){
+                response.data[i].disablePick=true
+              }
+
+              $scope.totals.push(response.data[i])
+          }
+
+          $scope.isLoading = false
+        }, function errorCallback(response) {
+          console.log(response)
+          $scope.isLoading = false
+        });
+  };
+
 
   $scope.selectPick = function(pickType, pickTeam, pickNumber, opponentTeam, opponentNumber){
     console.log('selectPick')
@@ -105,9 +129,7 @@ app.controller("picksController", function ($scope, $http, $mdDialog, authServic
     }
     console.log($scope.pick)
 
-    console.log('parlays', $scope.parlays)
-
-    if(pickType==="moneyLine" || $scope.parlays.length > 3){
+    if(pickType==="moneyLine" || parlayService.getParlays().length > 3){
       $scope.disableParlay = true
     }else{
       $scope.disableParlay = false
@@ -160,7 +182,8 @@ app.controller("picksController", function ($scope, $http, $mdDialog, authServic
   $scope.init = function(){
     $scope.moneyLines()
     $scope.getSpreads()
-    $scope.parlays = []
+    $scope.getTotals()
+    $scope.parlays = parlayService.getParlays()
     $scope.confirmText = 'Confirm Pick'
   }
 

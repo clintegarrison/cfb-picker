@@ -35,6 +35,7 @@ app.config(function($routeProvider,$locationProvider){
     templateUrl : "standings.html"
   })
   .when("/totals", {
+    controller: 'picksController',
     templateUrl : "totals.html"
   })
   .otherwise("/login", {

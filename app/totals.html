@@ -1,1 +1,20 @@
-Not yet implemented
+<md-progress-circular md-mode="indeterminate" ng-show="isLoading"></md-progress-circular>
+<md-list>
+  <md-list-item class="md-2-line" ng-repeat="total in totals" >
+    <div class="md-list-item-text" layout="column" ng-class-odd="'odd'" ng-class-even="'even'">
+      <p align="center" style="margin-bottom: -5px;"> {{total.gameTime}}</p>
+      <p>
+        <md-button ng-disabled="total.disablePick" class="md-raised md-primary" ng-click="selectPick('totals', total.teamOne, 'OVER ' + total.totalPoints, total.teamTwo, 'UNDER ' + total.totalPoints)">
+          Pick
+        </md-button>
+        {{total.teamOne}} OVER {{total.totalPoints}}
+      </p>
+      <p>
+        <md-button ng-disabled="total.disablePick" class="md-raised md-primary" ng-click="selectPick('totals', total.teamOne, 'UNDER ' + total.totalPoints, total.teamTwo, 'OVER ' + total.totalPoints)">
+        Pick
+      </md-button>
+      vs {{total.teamTwo}} UNDER {{total.totalPoints}}
+    </p>
+    </div>
+  </md-list-item>
+</md-list>

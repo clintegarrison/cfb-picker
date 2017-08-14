@@ -60,6 +60,14 @@ app.controller("myPicksController", function ($scope, $http, authService) {
                       stringPick += ' against '
                       stringPick += jsonPick.parlays[x].opponentTeam
                       stringPick += '\n'
+                    }else if(jsonPick.parlays[x].pickType==="totals"){
+                      stringPick += ' - '
+                      stringPick += jsonPick.parlays[x].pickTeam
+                      stringPick += ' and '
+                      stringPick += jsonPick.parlays[x].opponentTeam
+                      stringPick += ' to score '
+                      stringPick += jsonPick.parlays[x].pickNumber
+                      stringPick += '\n'
                     }
                   }
                 }else{
