@@ -1,6 +1,6 @@
 var app = angular.module("cfbPicker")
 
-app.controller("picksController", function ($scope, $http, $mdDialog, authService, parlayService) {
+app.controller("picksController", function ($scope, $http, $mdDialog, authService, parlayService, weekService) {
 
   console.log('picksController - HERE')
 
@@ -36,6 +36,7 @@ app.controller("picksController", function ($scope, $http, $mdDialog, authServic
       $scope.pick.userName = authService.getUserName()
       $scope.pick.timestamp = new Date().toJSON()
       $scope.pick.pickAmount = pickAmount
+      $scope.pick.weekNumber = weekService.getCurrentWeek()
 
       console.log($scope.pick)
 

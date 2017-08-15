@@ -1,6 +1,6 @@
 var app = angular.module("cfbPicker")
 
-app.controller("mainController", function ($scope, $location, authService) {
+app.controller("mainController", function ($scope, $location, authService, weekService) {
 
     $scope.navigateTo = function ( path ) {
       if(path==='/moneyLines'){
@@ -41,5 +41,8 @@ app.controller("mainController", function ($scope, $location, authService) {
       $scope.userName = authService.getUserName();
       return authService.getUserAuthenticated()
     }
+
+    $scope.rightNow = weekService.getNow()
+    $scope.currentWeek = weekService.getCurrentWeek()
 
 });
