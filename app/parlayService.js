@@ -15,7 +15,7 @@ app.service('parlayService', function(){
       parlays = []
     }
 
-    this.deleteParlayPick = function(parlay){
+    this.deleteParlayPick = function(parlayPick){
       var index = parlays.indexOf(parlayPick)
       parlays.splice(index, 1)
     }
