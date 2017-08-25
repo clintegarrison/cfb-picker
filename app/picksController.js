@@ -17,6 +17,14 @@ app.controller("picksController", function ($scope, $http, $mdDialog, authServic
 
     $scope.disableParlay = true
 
+    $scope.wagerAmounts = [50,100]
+
+    if(parlayService.getParlays().length == 1){
+      $scope.disableConfirmParlay = true
+    }else{
+      $scope.disableConfirmParlay = false
+    }
+
     $scope.confirmText = 'Confirm Parlay'
   }
 
@@ -28,11 +36,18 @@ app.controller("picksController", function ($scope, $http, $mdDialog, authServic
     if(parlayService.getParlays().length===0){
       $scope.confirmText = 'Confirm Pick'
     }
+
+    if(parlayService.getParlays().length > 0){
+      $scope.wagerAmounts = [50,100]
+    }else{
+      $scope.wagerAmounts = [110,220]
+    }
   }
 
   $scope.confirm = function(pickAmount) {
 
     if($scope.confirmText==='Confirm Pick'){
+      if(pickAmount < 105)
       $scope.pick.userName = authService.getUserName()
       $scope.pick.timestamp = new Date().toJSON()
       $scope.pick.pickAmount = pickAmount
@@ -134,6 +149,12 @@ app.controller("picksController", function ($scope, $http, $mdDialog, authServic
       $scope.disableParlay = true
     }else{
       $scope.disableParlay = false
+    }
+    console.log('PARLAY COUNT:', parlayService.getParlays().length)
+    if(pickType==="moneyLine" || parlayService.getParlays().length > 0){
+      $scope.wagerAmounts = [50,100]
+    }else{
+      $scope.wagerAmounts = [110,220]
     }
     console.log('$scope.parlayEnabled:',$scope.disableParlay)
 

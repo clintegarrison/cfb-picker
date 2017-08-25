@@ -2,13 +2,14 @@
   <p style="text-align:center">{{sharedPicksController.pick.pickTeam}} {{sharedPicksController.pick.pickNumber}}</p>
   <section layout="row">
     <md-input-container>
-      <label>Wager Amont</label>
+      <label>Wager Amount</label>
       <md-select style="width:120px" ng-model="pickAmount">
-        <md-option ng-selected="true" value="110">110</md-option>
-        <md-option value="220">220</md-option>
+        <!-- <md-option ng-selected="true" value="110">110</md-option>
+        <md-option value="220">220</md-option> -->
+        <md-option ng-repeat="wagerAmount in sharedPicksController.wagerAmounts" ng-value="{{wagerAmount}}">{{wagerAmount}}</md-option>
       </md-select>
     </md-input-container>
-    <md-button class="md-raised md-primary" ng-click="sharedPicksController.confirm(pickAmount)">{{sharedPicksController.confirmText}}</md-button>
+    <md-button class="md-raised md-primary" ng-disabled="sharedPicksController.disableConfirmParlay" ng-click="sharedPicksController.confirm(pickAmount)">{{sharedPicksController.confirmText}}</md-button>
   </section>
   <p style="text-align:center">OR</p>
   <section layout="row">
