@@ -45,6 +45,7 @@ app.controller("picksController", function ($scope, $http, $mdDialog, authServic
   }
 
   $scope.confirm = function(pickAmount) {
+    console.log(weekService.getCurrentWeekDate())
 
     if($scope.confirmText==='Confirm Pick'){
       if(pickAmount < 105)
@@ -101,6 +102,14 @@ app.controller("picksController", function ($scope, $http, $mdDialog, authServic
       }).then(function successCallback(response) {
           console.log(response)
           $scope.spreads = response.data
+          $scope.spreads = [];
+          for (i = 0; i < response.data.length; i++) {
+              if(!response.data[i].gameTime.includes('8/26')){
+                response.data[i].disablePick=true
+              }
+
+              $scope.spreads.push(response.data[i])
+          }
           $scope.isLoading = false
         }, function errorCallback(response) {
           console.log(response)
@@ -120,6 +129,8 @@ app.controller("picksController", function ($scope, $http, $mdDialog, authServic
           $scope.totals = [];
           for (i = 0; i < response.data.length; i++) {
               if(response.data[i].totalPoints === ''){
+                response.data[i].disablePick=true
+              }if(!response.data[i].gameTime.includes('8/26')){
                 response.data[i].disablePick=true
               }
 
@@ -188,6 +199,11 @@ app.controller("picksController", function ($scope, $http, $mdDialog, authServic
                 response.data[i].teamTwoDisabled=true
               }else{
                 response.data[i].teamTwoDisabled=false
+              }
+
+              if(!response.data[i].gameTime.includes('8/26')){
+                response.data[i].teamOneDisabled=true
+                response.data[i].teamTwoDisabled=true
               }
 
               $scope.moneyLines.push(response.data[i])

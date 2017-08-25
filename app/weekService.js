@@ -34,4 +34,8 @@ app.service('weekService', function(){
   this.getNow = function(){
     return new Date()
   }
+
+  this.getCurrentWeekDate = function(){
+    return weeks[this.getCurrentWeek()-1]
+  }
 })
