@@ -44,6 +44,9 @@ app.controller("myPicksController", function ($scope, $http, authService) {
                   stringPick += jsonPick.pickNumber
                   stringPick += ') to win outright against '
                   stringPick += jsonPick.opponentTeam
+                  stringPick += ' for '
+                  stringPick += jsonPick.pickAmount
+                  stringPick += ' credits. '
                   stringPick += '\n'
                 }else if(jsonPick.pickType==="parlay"){
                   var parlays = jsonPick.parlays
@@ -70,8 +73,15 @@ app.controller("myPicksController", function ($scope, $http, authService) {
                       stringPick += '\n'
                     }
                   }
-                }else{
-                  stringPick += response.data[i]
+                }else if(jsonPick.pickType==="totals"){
+                  stringPick += jsonPick.pickTeam
+                  stringPick += ' vs '
+                  stringPick += jsonPick.opponentTeam
+                  stringPick += ' to score '
+                  stringPick += jsonPick.pickNumber
+                  stringPick += ' for '
+                  stringPick += jsonPick.pickAmount
+                  stringPick += ' credits. '
                 }
                 var newJsonPick = {
                   pickNumber: i,
