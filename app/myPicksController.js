@@ -19,6 +19,16 @@ app.controller("myPicksController", function ($scope, $http, authService) {
 
     $scope.getMyPicks = function() {
         console.log('picks')
+        var games = []
+        $http({
+          method: 'GET',
+          url: 'https://cfb-scoreboard-api.herokuapp.com/v1/date/20170826'
+          //url: 'http://localhost:5000/v1/date/20170826'
+        }).then(function successCallback(response) {
+          games = response.data.games
+          console.log(games)
+        })
+
         $http({
           method: 'GET',
           url: '/getPicks',
