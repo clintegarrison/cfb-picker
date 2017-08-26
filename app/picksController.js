@@ -48,7 +48,7 @@ app.controller("picksController", function ($scope, $http, $mdDialog, authServic
     console.log(weekService.getCurrentWeekDate())
 
     if($scope.confirmText==='Confirm Pick'){
-      if(pickAmount < 105)
+
       $scope.pick.userName = authService.getUserName()
       $scope.pick.timestamp = new Date().toJSON()
       $scope.pick.pickAmount = pickAmount
