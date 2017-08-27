@@ -1,7 +1,7 @@
 <md-list>
   <md-list-item class="md-2-line" ng-repeat="pick in myPicks" >
     <div class="md-list-item-text" layout="row" ng-class-odd="'odd'" ng-class-even="'even'">
-      <md-button class="md-raised md-primary" ng-click="delete(pick.originalPick)">
+      <md-button ng-disabled="pick.disabled" class="md-raised md-primary" ng-click="delete(pick.originalPick)">
         Delete
       </md-button>
 

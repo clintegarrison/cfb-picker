@@ -145,14 +145,15 @@ app.controller("picksController", function ($scope, $http, $mdDialog, authServic
   };
 
 
-  $scope.selectPick = function(pickType, pickTeam, pickNumber, opponentTeam, opponentNumber){
+  $scope.selectPick = function(pickType, pickTeam, pickNumber, opponentTeam, opponentNumber, gameTime){
     console.log('selectPick')
     $scope.pick = {
       'pickType': pickType,
       'pickTeam': pickTeam,
       'pickNumber': pickNumber,
       'opponentTeam': opponentTeam,
-      'opponentNumber': opponentNumber
+      'opponentNumber': opponentNumber,
+      'gameTime': gameTime
     }
     console.log($scope.pick)
 

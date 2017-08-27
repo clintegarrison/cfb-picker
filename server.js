@@ -13,6 +13,7 @@ app.use(bodyParser.urlencoded({
 
 app.use(express.static(__dirname + '/app'));
 
+
 app.post('/register', function(req, res, next) {
     console.log('register:',req.body)
     var key = "user:" + req.body.userName;
