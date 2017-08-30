@@ -40,12 +40,28 @@ function getList(key, callback){
   })
 }
 
+function getUserPicksKeys(callback){
+  client.keys('user:*:picks', function(err, reply) {
+    if(err){
+      callback(null, err)
+    }else{
+      console.log(reply)
+      if(reply!==null){
+        callback(reply, null)
+      }else{
+        callback(null, "not found")
+      }
+    }
+  })
+}
+
 var redisManager = {
 	setKeyValue: setKeyValue,
 	getValueByKey: getValueByKey,
   addToList: addToList,
   getList: getList,
-  removeFromList: removeFromList
+  removeFromList: removeFromList,
+  getUserPicksKeys: getUserPicksKeys
 }
 
 module.exports = redisManager;

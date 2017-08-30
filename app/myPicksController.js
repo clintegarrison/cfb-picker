@@ -18,6 +18,7 @@ app.controller("myPicksController", function ($scope, $http, authService) {
     }
 
     $scope.getMyPicks = function() {
+        $scope.isLoading = true
         console.log('picks')
         var games = []
         $http({
@@ -123,8 +124,10 @@ app.controller("myPicksController", function ($scope, $http, authService) {
                   }
                   $scope.myPicks.push(newJsonPick);
               }
+              $scope.isLoading = false
             }, function errorCallback(response) {
               console.log(response)
+              $scope.isLoading = false
             });
         })
 

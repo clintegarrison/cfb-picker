@@ -1,11 +1,17 @@
+<md-progress-circular md-mode="indeterminate" ng-show="isLoading"></md-progress-circular>
 <md-list>
   <md-list-item class="md-2-line" ng-repeat="pick in myPicks" >
-    <div class="md-list-item-text" layout="row" ng-class-odd="'odd'" ng-class-even="'even'">
-      <md-button ng-disabled="pick.disabled" class="md-raised md-primary" ng-click="delete(pick.originalPick)">
-        Delete
-      </md-button>
+    <div class="md-list-item-text" layout="column" ng-class-odd="'odd'" ng-class-even="'even'">
+      <!-- <p align="center" style="margin-bottom: -5px;"> testing </p> -->
+      <div class="md-list-item-text" layout="row">
+        <p>
+          <md-button ng-disabled="pick.disabled" class="md-raised md-primary" ng-click="delete(pick.originalPick)">
+            Delete
+          </md-button>
 
-      <p style="white-space: pre-wrap;">{{pick.prettyPrint}}</p>
+          <p style="white-space: pre-wrap;">{{pick.prettyPrint}}</p>
+        </p>
+      </div>
     </div>
   </md-list-item>
 </md-list>

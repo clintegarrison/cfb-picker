@@ -32,7 +32,9 @@ app.controller("picksController", function ($scope, $http, $mdDialog, authServic
     parlayService.deleteParlayPick(parlayPick)
     if(parlayPick===$scope.pick){
       $scope.disableParlay = false
+      $scope.disableConfirmParlay = false
     }
+    console.log('plen:', parlayService.getParlays().length)
     if(parlayService.getParlays().length===0){
       $scope.confirmText = 'Confirm Pick'
     }
@@ -45,51 +47,55 @@ app.controller("picksController", function ($scope, $http, $mdDialog, authServic
   }
 
   $scope.confirm = function(pickAmount) {
-    console.log(weekService.getCurrentWeekDate())
+    // console.log(pickAmount)
+    if (typeof pickAmount != 'undefined'){
 
-    if($scope.confirmText==='Confirm Pick'){
+      console.log(weekService.getCurrentWeekDate())
 
-      $scope.pick.userName = authService.getUserName()
-      $scope.pick.timestamp = new Date().toJSON()
-      $scope.pick.pickAmount = pickAmount
-      $scope.pick.weekNumber = weekService.getCurrentWeek()
+      if($scope.confirmText==='Confirm Pick'){
 
-      console.log($scope.pick)
+        $scope.pick.userName = authService.getUserName()
+        $scope.pick.timestamp = new Date().toJSON()
+        $scope.pick.pickAmount = pickAmount
+        $scope.pick.weekNumber = weekService.getCurrentWeek()
 
-      $http({
-        method: 'POST',
-        url: '/makePick',
-        data: JSON.stringify($scope.pick),
-        headers: {'Content-Type': 'application/json'}
-      }).then(function successCallback(response) {
-          $mdDialog.cancel()
-        }, function errorCallback(response) {
-          $mdDialog.cancel()
-      });
-    }else{
-      console.log('confrim parlay')
+        console.log($scope.pick)
 
-      var parylayPick = {
-        pickType: "parlay",
-        pickAmount: pickAmount,
-        userName: authService.getUserName(),
-        parlays:  parlayService.getParlays()
+        $http({
+          method: 'POST',
+          url: '/makePick',
+          data: JSON.stringify($scope.pick),
+          headers: {'Content-Type': 'application/json'}
+        }).then(function successCallback(response) {
+            $mdDialog.cancel()
+          }, function errorCallback(response) {
+            $mdDialog.cancel()
+        });
+      }else{
+        console.log('confrim parlay')
+
+        var parylayPick = {
+          pickType: "parlay",
+          pickAmount: pickAmount,
+          userName: authService.getUserName(),
+          parlays:  parlayService.getParlays()
+        }
+
+        console.log('parylayPick', parylayPick)
+
+        $http({
+          method: 'POST',
+          url: '/makePick',
+          data: JSON.stringify(parylayPick),
+          headers: {'Content-Type': 'application/json'}
+        }).then(function successCallback(response) {
+            $mdDialog.cancel()
+          }, function errorCallback(response) {
+            $mdDialog.cancel()
+        });
+
+        parlayService.clearAllParlays()
       }
-
-      console.log('parylayPick', parylayPick)
-
-      $http({
-        method: 'POST',
-        url: '/makePick',
-        data: JSON.stringify(parylayPick),
-        headers: {'Content-Type': 'application/json'}
-      }).then(function successCallback(response) {
-          $mdDialog.cancel()
-        }, function errorCallback(response) {
-          $mdDialog.cancel()
-      });
-
-      parlayService.clearAllParlays()
     }
   }
 
@@ -104,10 +110,11 @@ app.controller("picksController", function ($scope, $http, $mdDialog, authServic
           $scope.spreads = response.data
           $scope.spreads = [];
           for (i = 0; i < response.data.length; i++) {
-              if(!response.data[i].gameTime.includes('8/26')){
-                response.data[i].disablePick=true
+              if(response.data[i].spreadTeamOne.includes('br') || response.data[i].spreadTeamTwo.includes('br')){
+                response.data[i].spreadTeamOne = ''
+                response.data[i].spreadTeamTwo = ''
+                response.data[i].disablePick = true
               }
-
               $scope.spreads.push(response.data[i])
           }
           $scope.isLoading = false
@@ -129,8 +136,6 @@ app.controller("picksController", function ($scope, $http, $mdDialog, authServic
           $scope.totals = [];
           for (i = 0; i < response.data.length; i++) {
               if(response.data[i].totalPoints === ''){
-                response.data[i].disablePick=true
-              }if(!response.data[i].gameTime.includes('8/26')){
                 response.data[i].disablePick=true
               }
 
@@ -202,10 +207,13 @@ app.controller("picksController", function ($scope, $http, $mdDialog, authServic
                 response.data[i].teamTwoDisabled=false
               }
 
-              if(!response.data[i].gameTime.includes('8/26')){
+              if(response.data[i].moneyLineTeamOne.indexOf('&nbsp;') >= 0 || response.data[i].moneyLineTeamTwo.indexOf('&nbsp;') >= 0){
+                response.data[i].moneyLineTeamOne = ''
+                response.data[i].moneyLineTeamTwo = ''
                 response.data[i].teamOneDisabled=true
                 response.data[i].teamTwoDisabled=true
               }
+
 
               $scope.moneyLines.push(response.data[i])
           }
