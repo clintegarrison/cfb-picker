@@ -96,24 +96,38 @@ app.controller("myPicksController", function ($scope, $http, authService) {
                   var disabledPick = false
 
                   console.log('jsonPick.gameTime:',jsonPick.gameTime)
-                  var gameStart = new Date()
-                  gameStart.setMonth(jsonPick.gameTime.substring(0,2) - 1, jsonPick.gameTime.substring(3,5))
-                  console.log('am/pm:',jsonPick.gameTime.slice(-2))
-                  var hours = 0;
-                  if(jsonPick.gameTime.slice(-2) == 'PM'){
-                    hours = 12 + parseInt(jsonPick.gameTime.substring(jsonPick.gameTime.indexOf(' '), jsonPick.gameTime.indexOf(':')))
+                  if(jsonPick.gameTime!=null){
+                    var gameStart = new Date()
+                    gameStart.setMonth(jsonPick.gameTime.substring(0,2) - 1, jsonPick.gameTime.substring(3,5))
+                    console.log('am/pm:',jsonPick.gameTime.slice(-2))
+                    var hours = 0;
+                    if(jsonPick.gameTime.slice(-2) == 'PM'){
+                      hours = 12 + parseInt(jsonPick.gameTime.substring(jsonPick.gameTime.indexOf(' '), jsonPick.gameTime.indexOf(':')))
+                    }else{
+                      hours = jsonPick.gameTime.substring(jsonPick.gameTime.indexOf(' '), jsonPick.gameTime.indexOf(':'))
+                    }
+                    console.log('hours:', hours)
+                    gameStart.setHours(hours)
+                    var minsSubStr = jsonPick.gameTime.substring(jsonPick.gameTime.indexOf(':'), jsonPick.gameTime.length)
+                    console.log('minutes:', minsSubStr.substring(1, minsSubStr.indexOf(' ')))
+                    gameStart.setMinutes(minsSubStr.substring(1, minsSubStr.indexOf(' ')))
+                    console.log('gameStart:',gameStart)
+                    var now = new Date()
+                    if(gameStart < now){
+                      disabledPick = true
+                    }
                   }else{
-                    hours = jsonPick.gameTime.substring(jsonPick.gameTime.indexOf(' '), jsonPick.gameTime.indexOf(':'))
-                  }
-                  console.log('hours:', hours)
-                  gameStart.setHours(hours)
-                  var minsSubStr = jsonPick.gameTime.substring(jsonPick.gameTime.indexOf(':'), jsonPick.gameTime.length)
-                  console.log('minutes:', minsSubStr.substring(1, minsSubStr.indexOf(' ')))
-                  gameStart.setMinutes(minsSubStr.substring(1, minsSubStr.indexOf(' ')))
-                  console.log('gameStart:',gameStart)
-                  var now = new Date()
-                  if(gameStart < now){
-                    disabledPick = true
+                    // this is for the week zero picks that didn't record gameTime
+                    var pickTime = null
+                    if(jsonPick.pickType=='parlay'){
+                      pickTime = new Date(jsonPick.parlays[0].timestamp)
+                    }else{
+                      pickTime = new Date(jsonPick.timestamp)
+                    }
+                    var beforeGameTimesAddedToPicks = new Date('2017-08-28T18:25:43.511Z')
+                    if(pickTime < beforeGameTimesAddedToPicks){
+                      disabledPick = true
+                    }
                   }
 
                   var newJsonPick = {
