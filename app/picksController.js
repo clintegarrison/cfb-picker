@@ -221,7 +221,8 @@ app.controller("picksController", function ($scope, $http, $mdDialog, authServic
               }
 
               if($scope.hasGameStarted(response.data[i].gameTime)){
-                response.data[i].disablePick=true
+                response.data[i].teamOneDisabled=true
+                response.data[i].teamTwoDisabled=true
               }
 
 
