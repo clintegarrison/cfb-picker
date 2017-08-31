@@ -115,6 +115,9 @@ app.controller("picksController", function ($scope, $http, $mdDialog, authServic
                 response.data[i].spreadTeamTwo = ''
                 response.data[i].disablePick = true
               }
+              if($scope.hasGameStarted(response.data[i].gameTime)){
+                response.data[i].disablePick=true
+              }
               $scope.spreads.push(response.data[i])
           }
           $scope.isLoading = false
@@ -136,6 +139,9 @@ app.controller("picksController", function ($scope, $http, $mdDialog, authServic
           $scope.totals = [];
           for (i = 0; i < response.data.length; i++) {
               if(response.data[i].totalPoints === ''){
+                response.data[i].disablePick=true
+              }
+              if($scope.hasGameStarted(response.data[i].gameTime)){
                 response.data[i].disablePick=true
               }
 
@@ -214,6 +220,10 @@ app.controller("picksController", function ($scope, $http, $mdDialog, authServic
                 response.data[i].teamTwoDisabled=true
               }
 
+              if($scope.hasGameStarted(response.data[i].gameTime)){
+                response.data[i].disablePick=true
+              }
+
 
               $scope.moneyLines.push(response.data[i])
           }
@@ -235,4 +245,32 @@ app.controller("picksController", function ($scope, $http, $mdDialog, authServic
   }
 
   $scope.init()
+
+  $scope.hasGameStarted = function(gameTime){
+    if(gameTime!=null){
+      var gameStart = new Date()
+      gameStart.setMonth(gameTime.substring(0,2) - 1, gameTime.substring(3,5))
+      console.log('am/pm:',gameTime.slice(-2))
+      var hours = 0;
+      if(gameTime.slice(-2) == 'PM'){
+        hours = 12 + parseInt(gameTime.substring(gameTime.indexOf(' '), gameTime.indexOf(':')))
+      }else{
+        hours = gameTime.substring(gameTime.indexOf(' '), gameTime.indexOf(':'))
+      }
+      console.log('hours:', hours)
+      gameStart.setHours(hours)
+      var minsSubStr = gameTime.substring(gameTime.indexOf(':'), gameTime.length)
+      console.log('minutes:', minsSubStr.substring(1, minsSubStr.indexOf(' ')))
+      gameStart.setMinutes(minsSubStr.substring(1, minsSubStr.indexOf(' ')))
+      console.log('gameStart:',gameStart)
+      var now = new Date()
+      if(gameStart < now){
+        return true
+      }else{
+        return false
+      }
+    }else{
+      return false
+    }
+  }
 })

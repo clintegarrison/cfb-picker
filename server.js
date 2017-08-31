@@ -30,6 +30,15 @@ app.post('/register', function(req, res, next) {
       creditAmount: 2500
     }
     redisManager.addToList('user:credits', JSON.stringify(userCredits))
+
+    var transaction = {
+      event: 'register',
+      serverTimestamp: new Date(),
+      ipAddress: req.ip,
+      log: req.body
+    }
+    redisManager.addToList('transactions', JSON.stringify(transaction))
+
     res.send('registered')
 });
 
@@ -49,6 +58,14 @@ app.post('/authenticate', function(req, res, next) {
           res.status(401).send('User Not Found')
         }
     })
+
+    var transaction = {
+      event: 'authenticate',
+      serverTimestamp: new Date(),
+      ipAddress: req.ip,
+      log: req.body
+    }
+    redisManager.addToList('transactions', JSON.stringify(transaction))
 });
 
 app.get('/getPicks', function(req, res, next) {
@@ -62,6 +79,14 @@ app.get('/getPicks', function(req, res, next) {
         res.status(500).send(value)
       }
     })
+
+    var transaction = {
+      event: 'getPicks',
+      serverTimestamp: new Date(),
+      ipAddress: req.ip,
+      log: req.body
+    }
+    redisManager.addToList('transactions', JSON.stringify(transaction))
 });
 
 app.get('/getCredits', function(req, res, next) {
@@ -79,6 +104,13 @@ app.get('/getCredits', function(req, res, next) {
           res.send(value)
         }
     })
+    var transaction = {
+      event: 'getCredits',
+      serverTimestamp: new Date(),
+      ipAddress: req.ip,
+      log: req.body
+    }
+    redisManager.addToList('transactions', JSON.stringify(transaction))
 });
 
 app.post('/makePick', function(req, res, next) {
@@ -87,6 +119,13 @@ app.post('/makePick', function(req, res, next) {
 
     redisManager.addToList(key, JSON.stringify(req.body))
     res.send('pick made')
+    var transaction = {
+      event: 'makePick',
+      serverTimestamp: new Date(),
+      ipAddress: req.ip,
+      log: req.body
+    }
+    redisManager.addToList('transactions', JSON.stringify(transaction))
 });
 
 app.post('/deletePick', function(req, res, next) {
@@ -94,6 +133,13 @@ app.post('/deletePick', function(req, res, next) {
     var key = 'user:'+ req.body.userName +':picks';
     redisManager.removeFromList(key, JSON.stringify(req.body))
     res.send('pick deleted')
+    var transaction = {
+      event: 'deletePick',
+      serverTimestamp: new Date(),
+      ipAddress: req.ip,
+      log: req.body
+    }
+    redisManager.addToList('transactions', JSON.stringify(transaction))
 });
 
 app.get('/calculateResults', function(req, res, next) {
