@@ -264,8 +264,15 @@ app.controller("picksController", function ($scope, $http, $mdDialog, authServic
       console.log('minutes:', minsSubStr.substring(1, minsSubStr.indexOf(' ')))
       gameStart.setMinutes(minsSubStr.substring(1, minsSubStr.indexOf(' ')))
       console.log('gameStart:',gameStart)
+
       var now = new Date()
-      if(gameStart < now){
+      //EST
+     var offset = -5.0
+     clientDate = new Date();
+     utc = clientDate.getTime() + (clientDate.getTimezoneOffset() * 60000);
+     serverDate = new Date(utc + (3600000*offset));
+
+      if(gameStart < serverDate){
         return true
       }else{
         return false
