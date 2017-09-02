@@ -7,7 +7,9 @@
       gameStart.setMonth(gameTime.substring(0,2) - 1, gameTime.substring(3,5))
       var hours = 0;
       if(gameTime.slice(-2) == 'PM'){
-        hours = 12 + parseInt(gameTime.substring(gameTime.indexOf(' '), gameTime.indexOf(':')))
+        if(parseInt(gameTime.substring(gameTime.indexOf(' '), gameTime.indexOf(':')))!=12){
+          hours = 12 + parseInt(gameTime.substring(gameTime.indexOf(' '), gameTime.indexOf(':')))
+        }
       }else{
         hours = gameTime.substring(gameTime.indexOf(' '), gameTime.indexOf(':'))
       }
