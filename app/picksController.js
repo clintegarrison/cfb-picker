@@ -137,6 +137,7 @@ app.controller("picksController", function ($scope, $http, $mdDialog, authServic
           console.log(response)
 
           $scope.totals = [];
+
           for (i = 0; i < response.data.length; i++) {
               if(response.data[i].totalPoints === ''){
                 response.data[i].disablePick=true
@@ -149,6 +150,7 @@ app.controller("picksController", function ($scope, $http, $mdDialog, authServic
           }
 
           $scope.isLoading = false
+
         }, function errorCallback(response) {
           console.log(response)
           $scope.isLoading = false
@@ -238,11 +240,17 @@ app.controller("picksController", function ($scope, $http, $mdDialog, authServic
   };
 
   $scope.init = function(){
-    $scope.moneyLines()
-    $scope.getSpreads()
-    $scope.getTotals()
-    $scope.parlays = parlayService.getParlays()
-    $scope.confirmText = 'Confirm Pick'
+    $http({
+      method: 'GET',
+      url: '/getServerTime'
+    }).then(function successCallback(serverTimeResponse) {
+        $scope.serverDate = new Date(serverTimeResponse.data)
+        $scope.moneyLines()
+        $scope.getSpreads()
+        $scope.getTotals()
+        $scope.parlays = parlayService.getParlays()
+        $scope.confirmText = 'Confirm Pick'
+      })
   }
 
   $scope.init()
@@ -251,30 +259,23 @@ app.controller("picksController", function ($scope, $http, $mdDialog, authServic
     if(gameTime!=null){
       var gameStart = new Date()
       gameStart.setMonth(gameTime.substring(0,2) - 1, gameTime.substring(3,5))
-      console.log('am/pm:',gameTime.slice(-2))
       var hours = 0;
       if(gameTime.slice(-2) == 'PM'){
         hours = 12 + parseInt(gameTime.substring(gameTime.indexOf(' '), gameTime.indexOf(':')))
       }else{
         hours = gameTime.substring(gameTime.indexOf(' '), gameTime.indexOf(':'))
       }
-      console.log('hours:', hours)
       gameStart.setHours(hours)
       var minsSubStr = gameTime.substring(gameTime.indexOf(':'), gameTime.length)
-      console.log('minutes:', minsSubStr.substring(1, minsSubStr.indexOf(' ')))
       gameStart.setMinutes(minsSubStr.substring(1, minsSubStr.indexOf(' ')))
+
       console.log('gameStart:',gameStart)
-
-      var now = new Date()
-      //EST
-     var offset = -5.0
-     clientDate = new Date();
-     utc = clientDate.getTime() + (clientDate.getTimezoneOffset() * 60000);
-     serverDate = new Date(utc + (3600000*offset));
-
-      if(gameStart < serverDate){
+      console.log('currentServerTime:',$scope.serverDate)
+      if(gameStart < $scope.serverDate){
+        console.log('game HAS started')
         return true
       }else{
+        console.log('game has NOT started')
         return false
       }
     }else{

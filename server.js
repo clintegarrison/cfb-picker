@@ -5,6 +5,7 @@ var cookieParser = require('cookie-parser')
 var bodyParser = require('body-parser')
 var redisManager = require('./app/redisManager')
 var http = require('http')
+var utils = require('./app/pickUtils')
 
 app.use(cookieParser());
 app.use(bodyParser.json());
@@ -79,14 +80,6 @@ app.get('/getPicks', function(req, res, next) {
         res.status(500).send(value)
       }
     })
-
-    var transaction = {
-      event: 'getPicks',
-      serverTimestamp: new Date(),
-      ipAddress: req.ip,
-      log: req.body
-    }
-    redisManager.addToList('transactions', JSON.stringify(transaction))
 });
 
 app.get('/getCredits', function(req, res, next) {
@@ -104,21 +97,26 @@ app.get('/getCredits', function(req, res, next) {
           res.send(value)
         }
     })
-    var transaction = {
-      event: 'getCredits',
-      serverTimestamp: new Date(),
-      ipAddress: req.ip,
-      log: req.body
-    }
-    redisManager.addToList('transactions', JSON.stringify(transaction))
+});
+
+app.get('/getServerTime', function(req, res, next) {
+    console.log('getServerTime')
+    var now = new Date()
+    res.send(now)
 });
 
 app.post('/makePick', function(req, res, next) {
     console.log('picks:',req.body)
     var key = 'user:'+ req.body.userName +':picks';
 
-    redisManager.addToList(key, JSON.stringify(req.body))
-    res.send('pick made')
+    var response = utils.hasGameStarted(req.body)
+    if(response == 'NO'){
+      redisManager.addToList(key, JSON.stringify(req.body))
+      res.send('pick made')
+    }else{
+      res.status(500).send(response)
+    }
+
     var transaction = {
       event: 'makePick',
       serverTimestamp: new Date(),
@@ -128,11 +126,19 @@ app.post('/makePick', function(req, res, next) {
     redisManager.addToList('transactions', JSON.stringify(transaction))
 });
 
+
 app.post('/deletePick', function(req, res, next) {
     console.log('pick to delete:',req.body)
     var key = 'user:'+ req.body.userName +':picks';
-    redisManager.removeFromList(key, JSON.stringify(req.body))
-    res.send('pick deleted')
+
+    var response = utils.hasGameStarted(req.body)
+    if(response == 'NO'){
+      redisManager.removeFromList(key, JSON.stringify(req.body))
+      res.send('pick deleted')
+    }else{
+      res.status(500).send(response)
+    }
+
     var transaction = {
       event: 'deletePick',
       serverTimestamp: new Date(),
