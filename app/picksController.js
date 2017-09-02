@@ -256,15 +256,22 @@ app.controller("picksController", function ($scope, $http, $mdDialog, authServic
   $scope.init()
 
   $scope.hasGameStarted = function(gameTime){
+    console.log('hasGameStarted START gameTime:', gameTime)
     if(gameTime!=null){
       var gameStart = new Date()
       gameStart.setMonth(gameTime.substring(0,2) - 1, gameTime.substring(3,5))
       var hours = 0;
+      console.log('hours before: ', parseInt(gameTime.substring(gameTime.indexOf(' '), gameTime.indexOf(':'))))
       if(gameTime.slice(-2) == 'PM'){
-        hours = 12 + parseInt(gameTime.substring(gameTime.indexOf(' '), gameTime.indexOf(':')))
+        console.log('PM')
+        if(parseInt(gameTime.substring(gameTime.indexOf(' '), gameTime.indexOf(':')))!=12){
+          hours = 12 + parseInt(gameTime.substring(gameTime.indexOf(' '), gameTime.indexOf(':')))
+        }
       }else{
+        console.log('no PM')
         hours = gameTime.substring(gameTime.indexOf(' '), gameTime.indexOf(':'))
       }
+      console.log('hours after: ',hours)
       gameStart.setHours(hours)
       var minsSubStr = gameTime.substring(gameTime.indexOf(':'), gameTime.length)
       gameStart.setMinutes(minsSubStr.substring(1, minsSubStr.indexOf(' ')))
