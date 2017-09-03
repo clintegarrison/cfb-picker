@@ -69,10 +69,66 @@ var getAllUserPicks = function(userPickKeys){
   })
 }
 
-var findGameForPick = function(pickString, games){
+var findGamesForParlay = function(pickJson, games){
   return new Promise(function(resolve, reject){
-    // console.log('findGameForPick...')
-    var pick = JSON.parse(pickString)
+
+    var pickArray = pickJson.parlays
+    var parlayGameResults = []
+
+    for(var i=0; i<pickArray.length; i++){
+      var pick = pickArray[i]
+      console.log('finding parlay game for ', pick.pickTeam)
+      var pickTeam = pick.pickTeam
+      var oppTeam = pick.opponentTeam
+
+      if (typeof pickTeam != 'undefined'){
+        pickTeam = pickTeam.toUpperCase()
+      }
+      if (typeof oppTeam != 'undefined'){
+        oppTeam = oppTeam.toUpperCase()
+      }
+
+      var game = null;
+      for(var q=0; q<games.length; q++){
+        if(games[q].teamOne.includes(pickTeam)){
+          game = games[q];
+          if(games[q].teamTwo.includes(oppTeam)){
+            break;
+          }
+        }else if(games[q].teamTwo.includes(pickTeam)){
+          game = games[q];
+          if(games[q].teamOne.includes(oppTeam)){
+            break;
+          }
+        }else if(games[q].teamOne.includes(oppTeam)){
+          game = games[q];
+          if(games[q].teamTwo.includes(pickTeam)){
+            break;
+          }
+        }else if(games[q].teamTwo.includes(oppTeam)){
+          game = games[q];
+          if(games[q].teamOne.includes(pickTeam)){
+            break;
+          }
+        }
+      }
+      if(game==null){
+        console.log('SHIT SHIT SHIT, cannnot find: ', pick.pickType, ' ',pickTeam, ' ', pick.gameTime)
+      }else{
+        console.log('found it!')
+      }
+      var resolved = {
+        pick: pick,
+        game: game
+      }
+      parlayGameResults.push(resolved)
+    }
+    resolve(parlayGameResults)
+  })
+}
+
+var findGameForPick = function(pick, games){
+  return new Promise(function(resolve, reject){
 
     var pickTeam = pick.pickTeam
     var oppTeam = pick.opponentTeam
@@ -83,23 +139,29 @@ var findGameForPick = function(pickString, games){
     if (typeof oppTeam != 'undefined'){
       oppTeam = oppTeam.toUpperCase()
     }
-    // console.log('pickTeam:',pickTeam)
-    // console.log('oppTeam',oppTeam)
 
     var game = null;
     for(var q=0; q<games.length; q++){
       if(games[q].teamOne.includes(pickTeam)){
         game = games[q];
-        break;
+        if(games[q].teamTwo.includes(oppTeam)){
+          break;
+        }
       }else if(games[q].teamTwo.includes(pickTeam)){
         game = games[q];
-        break;
+        if(games[q].teamOne.includes(oppTeam)){
+          break;
+        }
       }else if(games[q].teamOne.includes(oppTeam)){
         game = games[q];
-        break;
+        if(games[q].teamTwo.includes(pickTeam)){
+          break;
+        }
       }else if(games[q].teamTwo.includes(oppTeam)){
         game = games[q];
-        break;
+        if(games[q].teamOne.includes(pickTeam)){
+          break;
+        }
       }
     }
     if(game==null){
@@ -115,34 +177,120 @@ var findGameForPick = function(pickString, games){
   })
 }
 
-var didBetWin = function(pick, game){
-  // console.log('didBetWin - game:',game)
-  // console.log('didBetWin - pick:',pick)
-
-  if(game != null && game.status == 'Final Score'){
-    if(pick.pickType == 'spread'){
-      didSpreadWin(pick, game)
+var didSingleGameBetWin = function(pick, game){
+  return new Promise(function(resolve, reject){
+    var pickResult = null;
+    if(game != null && game.status == 'Final Score'){
+      if(pick.pickType == 'spread'){
+        pickResult = didSpreadWin(pick, game)
+      }else if(pick.pickType == 'totals'){
+        pickResult = didTotalsWin(pick, game)
+      }else if(pick.pickType == 'moneyLine'){
+        pickResult = didMoneyLineWin(pick, game)
+      }
+      console.log('-------------------------------')
+    }else{
+      console.log('Not grading game, as it is not over:', pick.gameTime )
     }
-  }else{
-    console.log('Not grading game, as it is not over:', pick.gameTime )
+    resolve(pickResult)
+  })
+}
+
+var didParlayBetWin = function(parlayGameResults){
+   console.log('------PARLAY START-------')
+  //  console.log(parlayGameResults)
+  for(var i=0; i<parlayGameResults.length; i++){
+    var pick = parlayGameResults[i].pick
+    var game = parlayGameResults[i].game
+
+    if(game != null && game.status == 'Final Score'){
+      if(pick.pickType == 'spread'){
+        didSpreadWin(pick, game)
+      }else if(pick.pickType == 'totals'){
+        didTotalsWin(pick, game)
+      }else if(pick.pickType == 'moneyLine'){
+        didMoneyLineWin(pick, game)
+      }
+      console.log('-------------------------------')
+    }else{
+      console.log('Not grading game, as it is not over:', pick.gameTime )
+    }
   }
+  console.log('------PARLAY END-------')
+}
+
+var didMoneyLineWin = function(pick, game){
+  console.log('MONEYLINE: ',pick.userName,'wagered:', pick.pickAmount, ' ON:',pick.pickTeam, ' ',pick.pickNumber)
+  var pickResult = ''
+  if(game.winner.toUpperCase() == pick.pickTeam.toUpperCase()){
+    pickResult = 'WINNER';
+  }else{
+    pickResult = 'LOSER';
+  }
+  return createResult(pick, game, pickResult)
+  // console.log(pickResult)
+}
+
+var createResult = function(pick, game, result){
+  // single
+  var finalResult = {
+    betResult: result,
+    userName: pick.userName,
+    wagerAmount: pick.pickAmount,
+    gameStatus: game.gameStatus,
+    pickType: pick.pickType,
+    pickNumber: pick.pickNumber,
+    pickTeam: pick.pickTeam,
+    pickTeamScore: 0,
+    opponentTeam: pick.opponentTeam,
+    opponentTeamScore: 0
+  }
+  return finalResult
+  // parlay
+}
+
+var didTotalsWin = function(pick, game){
+    var pickResult = ''
+    var pickNumberString = pick.pickNumber.replace('OVER','')
+    pickNumberString = pickNumberString.replace('UNDER','').trim()
+    var pickNumber = Number(pickNumberString)
+
+    console.log('TOTALS: ',pick.userName,'wagered:', pick.pickAmount, ' ON:',pick.pickTeam, ' ',pickNumber)
+
+    var combinedScore = Number(game.teamOneScore) + Number(game.teamTwoScore)
+    // console.log('combinedScore:', combinedScore)
+    if(pick.pickNumber.includes('OVER')){
+      if(combinedScore > pickNumber){
+        pickResult = 'WINNER';
+      }else if(combinedScore == pickNumber){
+        pickResult = 'PUSH';
+      }else{
+        pickResult = 'LOSER';
+      }
+    }else{
+      if(combinedScore < pickNumber){
+        pickResult = 'WINNER';
+      }else if(combinedScore == pickNumber){
+        pickResult = 'PUSH';
+      }else{
+        pickResult = 'LOSER';
+      }
+    }
+    // console.log('result:', pickResult)
+    return createResult(pick, game, pickResult)
 }
 
 var didSpreadWin = function(pick, game){
-    console.log('calculating spread')
-
     var pickNumber = Number(pick.pickNumber)
     var pickResult = ''
 
-    console.log(pick.userName,'wagered:', pick.pickAmount, ' ON:',pick.pickTeam, ' ',pickNumber)
-    // console.log(game.teamOne, ' :',game.teamOneScore)
-    // console.log(game.teamTwo, ' :',game.teamTwoScore)
-    console.log('game:', game)
+    console.log('SPREAD: ',pick.userName,'wagered:', pick.pickAmount, ' ON:',pick.pickTeam, ' ',pickNumber)
+
     if(pickNumber < 0){
       if(pick.pickTeam.toUpperCase() == game.teamOne){
         // teamOne -12
         var actualNumber = game.teamTwoScore - game.teamOneScore
-        console.log('actualNumber', actualNumber)
+        // console.log('actualNumber', actualNumber)
         if(actualNumber < pickNumber){
           pickResult = 'WINNER';
         }else if(actualNumber == pickNumber){
@@ -153,7 +301,7 @@ var didSpreadWin = function(pick, game){
       }else{
         // teamTwo -12
         var actualNumber = game.teamOneScore - game.teamTwoScore
-        console.log('actualNumber', actualNumber)
+        // console.log('actualNumber', actualNumber)
         if(actualNumber < pickNumber){
           pickResult = 'WINNER';
         }else if(actualNumber == pickNumber){
@@ -187,7 +335,8 @@ var didSpreadWin = function(pick, game){
         }
       }
     }
-    console.log('result:', pickResult)
+    // console.log('result:', pickResult)
+    return createResult(pick, game, pickResult)
 }
 
 var calc = {
@@ -195,7 +344,9 @@ var calc = {
   getAllUserPicks: getAllUserPicks,
   getUserPicks: getUserPicks,
   findGameForPick: findGameForPick,
-  didBetWin: didBetWin
+  didSingleGameBetWin: didSingleGameBetWin,
+  findGamesForParlay: findGamesForParlay,
+  didParlayBetWin: didParlayBetWin
 }
 
 module.exports = calc;
