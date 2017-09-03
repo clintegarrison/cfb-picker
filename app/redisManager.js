@@ -55,6 +55,7 @@ function getUserPicksKeys(callback){
   })
 }
 
+
 var redisManager = {
 	setKeyValue: setKeyValue,
 	getValueByKey: getValueByKey,
