@@ -85,7 +85,7 @@ app.get('/getPicks', function(req, res, next) {
 
 app.get('/getCredits', function(req, res, next) {
     console.log('testCreds:',req.query)
-    redisManager.getList('user:credits', function(value, error){
+    redisManager.getList('user:credit', function(value, error){
 
         if(req.query.userName){
           for(i=0; i<value.length; i++){

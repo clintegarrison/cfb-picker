@@ -294,10 +294,12 @@ var didTotalsWin = function(pick, game){
     pickNumberString = pickNumberString.replace('UNDER','').trim()
     var pickNumber = Number(pickNumberString)
 
-    console.log('TOTALS: ',pick.userName,'wagered:', pick.pickAmount, ' ON:',pick.pickTeam, ' ',pickNumber)
+    console.log('TOTALS: ',pick.userName,'wagered:', pick.pickAmount, ' ON:',pick.pickTeam, ' ',pickNumberString)
 
     var combinedScore = Number(game.teamOneScore) + Number(game.teamTwoScore)
-    // console.log('combinedScore:', combinedScore)
+    console.log('combinedScore:', combinedScore)
+    console.log('pickNumber:', pickNumber)
+    console.log(game)
     if(pick.pickNumber.includes('OVER')){
       if(combinedScore > pickNumber){
         pickResult = 'WINNER';
@@ -315,6 +317,7 @@ var didTotalsWin = function(pick, game){
         pickResult = 'LOSER';
       }
     }
+    console.log('TOTES: ', pickResult)
     // console.log('result:', pickResult)
     return createResult(pick, game, pickResult)
 }

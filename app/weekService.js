@@ -28,7 +28,8 @@ app.service('weekService', function(){
         break;
       }
     }
-    return currentWeek
+    // return currentWeek
+    return 2 //hardcoding for now
   }
 
   this.getNow = function(){
