@@ -97,20 +97,20 @@ app.controller("myPicksController", function ($scope, $http, authService) {
 
                   console.log('jsonPick.gameTime:',jsonPick.gameTime)
                   if(jsonPick.pickType=="parlay"){
-                    for(var i=0; i<jsonPick.parlays.length; i++){
-                      jsonPick.parlays[i]
+                    for(var a=0; a<jsonPick.parlays.length; a++){
+                      jsonPick.parlays[a]
                       var gameStart = new Date()
-                      gameStart.setMonth(jsonPick.parlays[i].gameTime.substring(0,2) - 1, jsonPick.parlays[i].gameTime.substring(3,5))
-                      console.log('am/pm:',jsonPick.parlays[i].gameTime.slice(-2))
+                      gameStart.setMonth(jsonPick.parlays[a].gameTime.substring(0,2) - 1, jsonPick.parlays[a].gameTime.substring(3,5))
+                      console.log('am/pm:',jsonPick.parlays[a].gameTime.slice(-2))
                       var hours = 0;
-                      if(jsonPick.parlays[i].gameTime.slice(-2) == 'PM'){
-                        hours = 12 + parseInt(jsonPick.parlays[i].gameTime.substring(jsonPick.parlays[i].gameTime.indexOf(' '), jsonPick.parlays[i].gameTime.indexOf(':')))
+                      if(jsonPick.parlays[a].gameTime.slice(-2) == 'PM'){
+                        hours = 12 + parseInt(jsonPick.parlays[a].gameTime.substring(jsonPick.parlays[a].gameTime.indexOf(' '), jsonPick.parlays[a].gameTime.indexOf(':')))
                       }else{
-                        hours = jsonPick.parlays[i].gameTime.substring(jsonPick.parlays[i].gameTime.indexOf(' '), jsonPick.parlays[i].gameTime.indexOf(':'))
+                        hours = jsonPick.parlays[i].gameTime.substring(jsonPick.parlays[a].gameTime.indexOf(' '), jsonPick.parlays[a].gameTime.indexOf(':'))
                       }
                       console.log('hours:', hours)
                       gameStart.setHours(hours)
-                      var minsSubStr = jsonPick.parlays[i].gameTime.substring(jsonPick.parlays[i].gameTime.indexOf(':'), jsonPick.parlays[i].gameTime.length)
+                      var minsSubStr = jsonPick.parlays[a].gameTime.substring(jsonPick.parlays[a].gameTime.indexOf(':'), jsonPick.parlays[a].gameTime.length)
                       console.log('minutes:', minsSubStr.substring(1, minsSubStr.indexOf(' ')))
                       gameStart.setMinutes(minsSubStr.substring(1, minsSubStr.indexOf(' ')))
                       console.log('gameStart:',gameStart)
