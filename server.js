@@ -85,7 +85,7 @@ app.get('/getPicks', function(req, res, next) {
 
 app.get('/getCredits', function(req, res, next) {
     console.log('testCreds:',req.query)
-    redisManager.getList('user:credits', function(value, error){
+    redisManager.getList('user:credit', function(value, error){
 
         if(req.query.userName){
           for(i=0; i<value.length; i++){
@@ -149,7 +149,7 @@ app.post('/deletePick', function(req, res, next) {
     redisManager.addToList('transactions', JSON.stringify(transaction))
 });
 
-app.get('/test', function(req, res, next) {
+app.get('/calculateReults', function(req, res, next) {
 
   calc.getGamesFeed.then(function(games){
     console.log('we have ', games.length, ' games today')
@@ -189,22 +189,48 @@ app.get('/test', function(req, res, next) {
           Promise.all(gradePicksPromises).then(function(pickResults){
             console.log('done grading everything')
             console.log(pickResults.length)
-            // console.log(pickResults)
+
+            var nonNullResultsArray = []
+
+            var userArray = []
+            var creditsArray = []
+
             for(var i=0; i<pickResults.length; i++){
               var p = pickResults[i]
+              // console.log(p)
               if (typeof p != 'undefined' && p!=null){
-                //console.log(p)
-                console.log(p.betResult, p.userName, p.wagerAmount)
-              }
+                nonNullResultsArray.push(p)
 
+                console.log(p.betResult, p.userName, p.wagerAmount)
+
+                console.log(userArray.indexOf(p.userName))
+                if(userArray.indexOf(p.userName) == -1){
+                  userArray.push(p.userName)
+                  if(p.betResult=='LOSER'){
+                    creditsArray.push(p.wagerAmount)
+                  }else{
+                    // how much to win?
+                  }
+                }else{
+                  if(p.betResult=='LOSER'){
+                    // need to decrement amount here
+                  }else{
+                    // how much to win?
+                    // need to increment amount here
+                  }
+                }
+              }
             }
+
+            console.log(userArray)
+            res.send(nonNullResultsArray)
           })
         })
       })
     })
   })
 
-  res.send('done')
+  // res.send('done')
 })
 
 

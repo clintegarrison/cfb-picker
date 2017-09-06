@@ -75,6 +75,7 @@ var findGamesForParlay = function(pickJson, games){
     var pickArray = pickJson.parlays
     var parlayGameResults = []
 
+
     for(var i=0; i<pickArray.length; i++){
       var pick = pickArray[i]
       console.log('finding parlay game for ', pick.pickTeam)
@@ -119,7 +120,8 @@ var findGamesForParlay = function(pickJson, games){
       }
       var resolved = {
         pick: pick,
-        game: game
+        game: game,
+        parlayPickAmount: pickJson.pickAmount
       }
       parlayGameResults.push(resolved)
     }
@@ -197,25 +199,44 @@ var didSingleGameBetWin = function(pick, game){
 }
 
 var didParlayBetWin = function(parlayGameResults){
-   console.log('------PARLAY START-------')
-  //  console.log(parlayGameResults)
-  for(var i=0; i<parlayGameResults.length; i++){
-    var pick = parlayGameResults[i].pick
-    var game = parlayGameResults[i].game
+  var parlayResult = 'WINNER'
 
-    if(game != null && game.status == 'Final Score'){
-      if(pick.pickType == 'spread'){
-        didSpreadWin(pick, game)
-      }else if(pick.pickType == 'totals'){
-        didTotalsWin(pick, game)
-      }else if(pick.pickType == 'moneyLine'){
-        didMoneyLineWin(pick, game)
+  return new Promise(function(resolve, reject){
+     console.log('------PARLAY START-------')
+    //  console.log(parlayGameResults)
+    var parlayGamCount = parlayGameResults.length
+
+    for(var i=0; i<parlayGameResults.length; i++){
+      var pick = parlayGameResults[i].pick
+      var game = parlayGameResults[i].game
+
+      // console.log(game)
+      if(game != null && game.status == 'Final Score'){
+        var gameResult = ''
+        if(pick.pickType == 'spread'){
+          gameResult = didSpreadWin(pick, game)
+        }else if(pick.pickType == 'totals'){
+          gameResult = didTotalsWin(pick, game)
+        }else if(pick.pickType == 'moneyLine'){
+          gameResult = didMoneyLineWin(pick, game)
+        }
+        console.log('GAME ', i + 1, '/', parlayGameResults.length, ' result:', gameResult.betResult)
+        if(gameResult.betResult=='LOSER'){
+          parlayResult = 'LOSER'
+          break;
+        } else if (gameResult.betResult=='PUSH') {
+          parlayGamCount = parlayGamCount - 1
+        }
+
+      }else{
+        console.log('Not grading game, as it is not over:', pick.gameTime )
       }
-      console.log('-------------------------------')
-    }else{
-      console.log('Not grading game, as it is not over:', pick.gameTime )
     }
-  }
+    console.log('OVERALL PARLAY RESULT:', parlayResult)
+      console.log('------PARLAY END-------')
+    resolve(createParlayResult(parlayGameResults, parlayResult,parlayGamCount))
+  })
+
   console.log('------PARLAY END-------')
 }
 
@@ -247,6 +268,24 @@ var createResult = function(pick, game, result){
   }
   return finalResult
   // parlay
+}
+var createParlayResult = function(parlayResult, result, parlayGamCount){
+
+  var games = ''
+  // console.log(parlayResult)
+  for(var i=0; i<parlayResult.length; i++){
+    games += parlayResult[i].pick.pickTeam +  ' ' + parlayResult[i].pick.pickType + ' ' + parlayResult[i].pick.pickNumber
+  }
+
+  // parlay
+  var finalResult = {
+    betResult: result,
+    userName: parlayResult[0].pick.userName,
+    wagerAmount: parlayResult[0].parlayPickAmount,
+    parlayGamCount: parlayGamCount,
+    pickType: parlayGamCount + ' game parlay:  ' + games
+  }
+  return finalResult
 }
 
 var didTotalsWin = function(pick, game){
