@@ -83,6 +83,18 @@ app.get('/getPicks', function(req, res, next) {
     })
 });
 
+app.get('/getAllPicks', function(req, res, next) {
+  redisManager.getUserPicksKeys(function(userPickKeys, error){
+    var getUserPicksPromises = []
+    for(var i=0; i<userPickKeys.length; i++){
+      getUserPicksPromises.push(calc.getUserPicks(userPickKeys[i]))
+    }
+    Promise.all(getUserPicksPromises).then(function(userPicksArray){
+      res.send(userPicksArray)
+    })
+  })
+});
+
 app.get('/getCredits', function(req, res, next) {
     console.log('testCreds:',req.query)
     redisManager.getList('user:credit', function(value, error){
