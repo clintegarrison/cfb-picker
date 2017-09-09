@@ -9,6 +9,8 @@
       if(gameTime.slice(-2) == 'PM'){
         if(parseInt(gameTime.substring(gameTime.indexOf(' '), gameTime.indexOf(':')))!=12){
           hours = 12 + parseInt(gameTime.substring(gameTime.indexOf(' '), gameTime.indexOf(':')))
+        }else{
+          hours = 12
         }
       }else{
         hours = gameTime.substring(gameTime.indexOf(' '), gameTime.indexOf(':'))
