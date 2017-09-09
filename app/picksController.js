@@ -266,6 +266,8 @@ app.controller("picksController", function ($scope, $http, $mdDialog, authServic
         console.log('PM')
         if(parseInt(gameTime.substring(gameTime.indexOf(' '), gameTime.indexOf(':')))!=12){
           hours = 12 + parseInt(gameTime.substring(gameTime.indexOf(' '), gameTime.indexOf(':')))
+        }else{
+          hours = 12
         }
       }else{
         console.log('no PM')

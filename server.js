@@ -161,7 +161,7 @@ app.post('/deletePick', function(req, res, next) {
     redisManager.addToList('transactions', JSON.stringify(transaction))
 });
 
-app.get('/calculateReults', function(req, res, next) {
+app.get('/calculateResults', function(req, res, next) {
 
   calc.getGamesFeed.then(function(games){
     console.log('we have ', games.length, ' games today')
