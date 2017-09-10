@@ -1,9 +1,14 @@
 <md-progress-circular md-mode="indeterminate" ng-show="isLoading"></md-progress-circular>
 
-<!-- {{results}} -->
-
 <md-list>
-  <md-list-item class="md-2-line" ng-repeat="result in results" >
-    {{result}}
+
+
+
+
+
+  <md-subheader class="md-primary">Week One Picks</md-subheader>
+  <md-list-item layout="row" flex ng-repeat="pick in weekOnePicks" >
+
   </md-list-item>
+
 </md-list>

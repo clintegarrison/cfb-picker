@@ -44,11 +44,28 @@ var getUserPicks = function(userPicksKey){
     redisManager.getList(userPicksKey, function(userPicks){
       var userPicsObj = {
         userName: userPicksKey.split(':')[1],
-        picks: userPicks
+        picks: filterPicksByWeek(userPicks)
       }
       resolve(userPicsObj)
     })
   })
+}
+
+var filterPicksByWeek = function(userPicks){
+  var filteredPicks = []
+  // console.log(userPicks.length)
+
+  for(var i=0; i<userPicks.length; i++){
+    try {
+      var pick = JSON.parse(userPicks[i])
+      if(pick.weekNumber==1){
+        filteredPicks.push(pick)
+      }
+    } catch (e) {
+      console.log(userPicks[i])
+    }
+  }
+  return filteredPicks
 }
 
 var getAllUserPicks = function(userPickKeys){
@@ -60,11 +77,10 @@ var getAllUserPicks = function(userPickKeys){
           // userName: userPickKeys[i].split(':')[1],
           picks: userPicks
         }
-        console.log('looping')
+
         usersPicksArray.push(userPicks)
       })
     }
-    console.log('resolving')
     resolve(usersPicksArray)
   })
 }
@@ -78,7 +94,7 @@ var findGamesForParlay = function(pickJson, games){
 
     for(var i=0; i<pickArray.length; i++){
       var pick = pickArray[i]
-      console.log('finding parlay game for ', pick.pickTeam)
+      // console.log('finding parlay game for ', pick.pickTeam)
       var pickTeam = pick.pickTeam
       var oppTeam = pick.opponentTeam
 
@@ -116,7 +132,7 @@ var findGamesForParlay = function(pickJson, games){
       if(game==null){
         console.log('SHIT SHIT SHIT, cannnot find: ', pick.pickType, ' ',pickTeam, ' ', pick.gameTime)
       }else{
-        console.log('found it!')
+        // console.log('found it!')
       }
       var resolved = {
         pick: pickJson,
@@ -168,7 +184,7 @@ var findGameForPick = function(pick, games){
     if(game==null){
       console.log('SHIT SHIT SHIT, cannnot find: ', pick.pickType, ' ',pickTeam, ' ', pick.gameTime)
     }else{
-      console.log('found it!')
+      // console.log('found it!')
     }
     var resolved = {
       pick: pick,
@@ -204,12 +220,16 @@ var didParlayBetWin = function(parlayGameResults){
      console.log('------PARLAY START-------')
     //  console.log(parlayGameResults)
     var parlayGamCount = parlayGameResults.length
+    var wagerAmount = parlayGameResults[0].pick.pickAmount
+    var parlayResultsArray = []
 
     for(var i=0; i<parlayGameResults.length; i++){
-      var pick = parlayGameResults[i].pick
+      // var pick = parlayGameResults.parlays[i]
+      var pick = parlayGameResults[i].pick.parlays[i]
       var game = parlayGameResults[i].game
 
-      // console.log(game)
+      // console.log('game:',game)
+      // console.log('pick:',pick)
       if(game != null && game.status == 'Final Score'){
         var gameResult = ''
         if(pick.pickType == 'spread'){
@@ -222,18 +242,21 @@ var didParlayBetWin = function(parlayGameResults){
         console.log('GAME ', i + 1, '/', parlayGameResults.length, ' result:', gameResult.betResult)
         if(gameResult.betResult=='LOSER'){
           parlayResult = 'LOSER'
-          break;
         } else if (gameResult.betResult=='PUSH') {
           parlayGamCount = parlayGamCount - 1
         }
+        // console.log('8888888888888888888888')
+        // console.log(gameResult)
+        parlayResultsArray.push(gameResult)
 
       }else{
+        parlayResult = 'TBD'
         console.log('Not grading game, as it is not over:', pick.gameTime )
       }
     }
     console.log('OVERALL PARLAY RESULT:', parlayResult)
-      console.log('------PARLAY END-------')
-    resolve(createParlayResult(parlayGameResults, parlayResult,parlayGamCount))
+    console.log('------PARLAY END-------')
+    resolve(createParlayResult(parlayResultsArray, parlayResult,parlayGamCount,wagerAmount))
   })
 
   console.log('------PARLAY END-------')
@@ -266,7 +289,7 @@ var createResult = function(pick, game, result){
     betResult: result,
     userName: pick.userName,
     wagerAmount: pick.pickAmount,
-    gameStatus: game.gameStatus,
+    gameStatus: game.status,
     pickType: pick.pickType,
     pickNumber: pick.pickNumber,
     pickTeam: pick.pickTeam,
@@ -276,21 +299,24 @@ var createResult = function(pick, game, result){
   }
   return finalResult
 }
-var createParlayResult = function(parlayResult, result, parlayGamCount){
+var createParlayResult = function(parlayResult, result, parlayGamCount, wagerAmount){
 
   var games = ''
   // console.log(parlayResult)
   // for(var i=0; i<parlayResult.length; i++){
   //   games += parlayResult[i].pick.pickTeam +  ' ' + parlayResult[i].pick.pickType + ' ' + parlayResult[i].pick.pickNumber
   // }
+  // console.log('$$$$$$$$$$$$$$$$$$$$$$$$')
+  // console.log(parlayResult)
 
   // parlay
   var finalResult = {
     betResult: result,
-    userName: parlayResult[0].pick.userName,
-    wagerAmount: parlayResult[0].parlayPickAmount,
+    userName: parlayResult[0].userName,
+    wagerAmount: wagerAmount,
     parlayGamCount: parlayGamCount,
-    pickType: 'parlay'
+    pickType: 'parlay',
+    games: parlayResult
   }
   return finalResult
 }
@@ -304,9 +330,9 @@ var didTotalsWin = function(pick, game){
     console.log('TOTALS: ',pick.userName,'wagered:', pick.pickAmount, ' ON:',pick.pickTeam, ' ',pickNumberString)
 
     var combinedScore = Number(game.teamOneScore) + Number(game.teamTwoScore)
-    console.log('combinedScore:', combinedScore)
-    console.log('pickNumber:', pickNumber)
-    console.log(game)
+    // console.log('combinedScore:', combinedScore)
+    // console.log('pickNumber:', pickNumber)
+    // console.log(game)
     if(pick.pickNumber.includes('OVER')){
       if(combinedScore > pickNumber){
         pickResult = 'WINNER';
@@ -324,8 +350,7 @@ var didTotalsWin = function(pick, game){
         pickResult = 'LOSER';
       }
     }
-    console.log('TOTES: ', pickResult)
-    // console.log('result:', pickResult)
+
     return createResult(pick, game, pickResult)
 }
 
@@ -363,7 +388,7 @@ var didSpreadWin = function(pick, game){
       if(pick.pickTeam.toUpperCase() == game.teamOne){
         // teamOne +12
         var actualNumber = game.teamTwoScore - game.teamOneScore
-        console.log('actualNumber', actualNumber)
+        // console.log('actualNumber', actualNumber)
         if(actualNumber < pickNumber){
           pickResult = 'WINNER';
         }else if(actualNumber == pickNumber){
@@ -374,7 +399,7 @@ var didSpreadWin = function(pick, game){
       }else{
         // teamTwo +12
         var actualNumber = game.teamOneScore - game.teamTwoScore
-        console.log('actualNumber', actualNumber)
+        // console.log('actualNumber', actualNumber)
         if(actualNumber < pickNumber){
           pickResult = 'WINNER';
         }else if(actualNumber == pickNumber){

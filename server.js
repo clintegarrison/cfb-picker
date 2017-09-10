@@ -166,7 +166,6 @@ app.get('/calculateResults', function(req, res, next) {
   calc.getGamesFeed.then(function(games){
     console.log('we have ', games.length, ' games today')
     redisManager.getUserPicksKeys(function(userPickKeys, error){
-      console.log('we have ', games.length, ' games today')
       console.log('we have ', userPickKeys.length, ' users')
 
       var getUserPicksPromises = []
@@ -174,11 +173,12 @@ app.get('/calculateResults', function(req, res, next) {
         getUserPicksPromises.push(calc.getUserPicks(userPickKeys[i]))
       }
       Promise.all(getUserPicksPromises).then(function(userPicksArray){
-
         var findGameForPickPromises = []
+        var allPicksCount = 0
         for(var i=0; i<userPicksArray.length; i++){
           for(var x=0; x<userPicksArray[i].picks.length; x++){
-            var pickJson = JSON.parse(userPicksArray[i].picks[x])
+            allPicksCount = allPicksCount + 1
+            var pickJson = userPicksArray[i].picks[x]
             if(pickJson.pickType == 'parlay'){
                 findGameForPickPromises.push(calc.findGamesForParlay(pickJson, games))
             }else{
@@ -186,6 +186,7 @@ app.get('/calculateResults', function(req, res, next) {
             }
           }
         }
+        console.log('all picks:', allPicksCount)
         Promise.all(findGameForPickPromises).then(function(resolved){
           console.log('done finding games for this many ', resolved.length)
 
@@ -202,40 +203,38 @@ app.get('/calculateResults', function(req, res, next) {
             console.log('done grading everything')
             console.log(pickResults.length)
 
-            var nonNullResultsArray = []
+            // console.log(pickResults)
 
             var userArray = []
             var creditsArray = []
 
             for(var i=0; i<pickResults.length; i++){
               var p = pickResults[i]
-              // console.log(p)
-              if (typeof p != 'undefined' && p!=null){
-                nonNullResultsArray.push(p)
 
-                console.log(p.betResult, p.userName, p.wagerAmount)
+              console.log(p)
+              // console.log(p.betResult, p.userName, p.wagerAmount)
+              //
+              // // console.log(userArray.indexOf(p.userName))
+              // if(userArray.indexOf(p.userName) == -1){
+              //   userArray.push(p.userName)
+              //   if(p.betResult=='LOSER'){
+              //     creditsArray.push(p.wagerAmount)
+              //   }else{
+              //     // how much to win?
+              //   }
+              // }else{
+              //   if(p.betResult=='LOSER'){
+              //     // need to decrement amount here
+              //   }else{
+              //     // how much to win?
+              //     // need to increment amount here
+              //   }
+              // }
 
-                console.log(userArray.indexOf(p.userName))
-                if(userArray.indexOf(p.userName) == -1){
-                  userArray.push(p.userName)
-                  if(p.betResult=='LOSER'){
-                    creditsArray.push(p.wagerAmount)
-                  }else{
-                    // how much to win?
-                  }
-                }else{
-                  if(p.betResult=='LOSER'){
-                    // need to decrement amount here
-                  }else{
-                    // how much to win?
-                    // need to increment amount here
-                  }
-                }
-              }
             }
 
             console.log(userArray)
-            res.send(nonNullResultsArray)
+            res.send(pickResults)
           })
         })
       })
