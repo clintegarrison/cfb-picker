@@ -23,13 +23,12 @@ app.service('weekService', function(){
     var currentWeek = 0
 
     for(var i=0; i<weeks.length; i++){
-      if(weeks[0] > rightNow){
+      if(weeks[i] > rightNow){
         currentWeek = i+1
         break;
       }
     }
-    // return currentWeek
-    return 2 //hardcoding for now
+    return currentWeek
   }
 
   this.getNow = function(){

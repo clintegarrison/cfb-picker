@@ -3,11 +3,15 @@
 var http = require('http')
 var redisManager = require('./redisManager')
 
-var getGamesFeed = new Promise(
+
+
+var getGamesFeed = function(weekNo){
+  return new Promise(
   function(resolve, reject){
     var games = []
-
-    http.get('http://odds-service.herokuapp.com/getScores', function(response) {
+    var url = 'http://odds-service.herokuapp.com/getScores' + '?weekNo=' + weekNo
+    console.log('url:',url)
+    http.get(url, function(response) {
       // Buffer the body entirely for processing as a whole.
       var bodyChunks = [];
       response.on('data', function(chunk) {
@@ -38,14 +42,18 @@ var getGamesFeed = new Promise(
       })
     })
 })
+}
 
 var getUserPicks = function(userPicksKey){
   return new Promise(function(resolve,reject){
+    console.log('userPicksKey', userPicksKey)
     redisManager.getList(userPicksKey, function(userPicks){
+      console.log('userPicks',userPicks)
       var userPicsObj = {
         userName: userPicksKey.split(':')[1],
         picks: filterPicksByWeek(userPicks)
       }
+      // console.log('getUserPics=', userPicsObj)
       resolve(userPicsObj)
     })
   })
@@ -53,16 +61,15 @@ var getUserPicks = function(userPicksKey){
 
 var filterPicksByWeek = function(userPicks){
   var filteredPicks = []
-  // console.log(userPicks.length)
 
   for(var i=0; i<userPicks.length; i++){
     try {
       var pick = JSON.parse(userPicks[i])
-      if(pick.weekNumber==1){
+      if(pick.weekNumber==getCurrentWeek()){
         filteredPicks.push(pick)
       }
     } catch (e) {
-      console.log(userPicks[i])
+      // console.log(userPicks[i])
     }
   }
   return filteredPicks
@@ -87,7 +94,7 @@ var getAllUserPicks = function(userPickKeys){
 
 var findGamesForParlay = function(pickJson, games){
   return new Promise(function(resolve, reject){
-
+    console.log('parlay')
     var pickArray = pickJson.parlays
     var parlayGameResults = []
 
@@ -146,7 +153,7 @@ var findGamesForParlay = function(pickJson, games){
 
 var findGameForPick = function(pick, games){
   return new Promise(function(resolve, reject){
-
+    console.log('pick')
     var pickTeam = pick.pickTeam
     var oppTeam = pick.opponentTeam
 
@@ -208,6 +215,7 @@ var didSingleGameBetWin = function(pick, game){
       console.log('-------------------------------')
     }else{
       console.log('Not grading game, as it is not over:', pick.gameTime )
+      console.log(pick, game)
     }
     resolve(pickResult)
   })
@@ -263,13 +271,13 @@ var didParlayBetWin = function(parlayGameResults){
 }
 
 var didMoneyLineWin = function(pick, game){
-  console.log('MONEYLINE: ',pick.userName,'wagered:', pick.pickAmount, ' ON:',pick.pickTeam, ' ',pick.pickNumber)
   var pickResult = ''
   if(game.winner.toUpperCase() == pick.pickTeam.toUpperCase()){
     pickResult = 'WINNER';
   }else{
     pickResult = 'LOSER';
   }
+    console.log('MONEYLINE: ',pick.userName,'wagered:', pick.pickAmount, ' ON:',pick.pickTeam, ' ',pick.pickNumber, ' ', pickResult)
   return createResult(pick, game, pickResult)
   // console.log(pickResult)
 }
@@ -327,8 +335,6 @@ var didTotalsWin = function(pick, game){
     pickNumberString = pickNumberString.replace('UNDER','').trim()
     var pickNumber = Number(pickNumberString)
 
-    console.log('TOTALS: ',pick.userName,'wagered:', pick.pickAmount, ' ON:',pick.pickTeam, ' ',pickNumberString)
-
     var combinedScore = Number(game.teamOneScore) + Number(game.teamTwoScore)
     // console.log('combinedScore:', combinedScore)
     // console.log('pickNumber:', pickNumber)
@@ -350,6 +356,7 @@ var didTotalsWin = function(pick, game){
         pickResult = 'LOSER';
       }
     }
+    console.log('TOTALS: ',pick.userName,'wagered:', pick.pickAmount, ' ON:',pick.pickTeam, ' ',pickNumberString, ' ',pickResult)
 
     return createResult(pick, game, pickResult)
 }
@@ -357,8 +364,6 @@ var didTotalsWin = function(pick, game){
 var didSpreadWin = function(pick, game){
     var pickNumber = Number(pick.pickNumber)
     var pickResult = ''
-
-    console.log('SPREAD: ',pick.userName,'wagered:', pick.pickAmount, ' ON:',pick.pickTeam, ' ',pickNumber)
 
     if(pickNumber < 0){
       if(pick.pickTeam.toUpperCase() == game.teamOne){
@@ -409,8 +414,102 @@ var didSpreadWin = function(pick, game){
         }
       }
     }
+    console.log('SPREAD: ',pick.userName,'wagered:', pick.pickAmount, ' ON:',pick.pickTeam, ' ',pickNumber, ' ', pickResult)
     // console.log('result:', pickResult)
     return createResult(pick, game, pickResult)
+}
+
+var getCurrentWeek = function(){
+  var rightNow = new Date()
+  var currentWeek = 0
+
+  var weeks = [
+    new Date("2017/9/5"),
+    new Date("2017/9/12"),
+    new Date("2017/9/19"),
+    new Date("2017/9/26"),
+    new Date("2017/10/3"),
+    new Date("2017/10/10"),
+    new Date("2017/10/17"),
+    new Date("2017/10/24"),
+    new Date("2017/10/30"),
+    new Date("2017/11/6"),
+    new Date("2017/11/13"),
+    new Date("2017/11/20")
+  ]
+
+  for(var i=0; i<weeks.length; i++){
+    if(weeks[i] > rightNow){
+      currentWeek = i+1
+      break;
+    }
+  }
+  return currentWeek
+}
+
+var calculateCreditChange = function(result){
+  if(result.betResult=='LOSER'){
+    return -result.wagerAmount
+  }
+  else if(result.betResult=='PUSH'){
+    return 0
+  }
+  else if(result.pickType=='spread' || result.pickType=='totals'){
+    if(result.wagerAmount==220){
+      return 200
+    }else if(result.wagerAmount==110){
+      return 100
+    }
+  }else if(result.pickType=='moneyLine'){
+    var div = result.pickNumber / 100
+    return result.wagerAmount * div
+  }else if(result.pickType=='parlay'){
+    if(result.wagerAmount==50){
+      if(result.parlayGamCount==1){
+        return 100
+      }else if(result.parlayGamCount==2){
+        return 130
+      }else if(result.parlayGamCount==3){
+        return 300
+      }else if(result.parlayGamCount==4){
+        return 500
+      }
+    }else if(result.wagerAmount==100){
+      if(result.parlayGamCount==1){
+        return 200
+      }else if(result.parlayGamCount==2){
+        return 260
+      }else if(result.parlayGamCount==3){
+        return 600
+      }else if(result.parlayGamCount==4){
+        return 1000
+      }
+    }
+  }
+}
+
+var prettyPrintPick = function(result){
+  if(result.pickType=='spread'){
+    return prettyPrintSpreakPick(result)
+  }else if(result.pickType=='totals'){
+    return prettyPrintTotalPick(result)
+  }else if(result.pickType=='moneyLine'){
+    return prettyPrintMoneyLinePick(result)
+  }else{
+    return null
+  }
+}
+
+var prettyPrintSpreakPick = function(result){
+  return '  ' + result.pickTeam + '(' + result.pickTeamScore + ') to cover ' + result.pickNumber + ' \nvs ' + result.opponentTeam + '(' + result.opponentTeamScore + ')'
+}
+
+var prettyPrintTotalPick = function(result){
+  return '  ' + result.pickTeam + '(' + result.pickTeamScore + ') ' + result.pickNumber + '\nvs ' +result.opponentTeam + '(' + result.opponentTeamScore + ')'
+}
+
+var prettyPrintMoneyLinePick = function(result){
+  return '  ' + result.pickTeam + '(' + result.pickTeamScore + ') ' + result.pickNumber + ' odds \nvs ' + result.opponentTeam + '(' + result.opponentTeamScore + ')'
 }
 
 var calc = {
@@ -420,7 +519,10 @@ var calc = {
   findGameForPick: findGameForPick,
   didSingleGameBetWin: didSingleGameBetWin,
   findGamesForParlay: findGamesForParlay,
-  didParlayBetWin: didParlayBetWin
+  didParlayBetWin: didParlayBetWin,
+  getCurrentWeek: getCurrentWeek,
+  calculateCreditChange: calculateCreditChange,
+  prettyPrintPick: prettyPrintPick
 }
 
 module.exports = calc;

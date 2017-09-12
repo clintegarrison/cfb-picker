@@ -72,7 +72,8 @@ app.post('/authenticate', function(req, res, next) {
 
 app.get('/getPicks', function(req, res, next) {
     console.log('picks:',req.query)
-    redisManager.getList('user:'+ req.query.userName +':picks', function(value, error){
+    redisManager.getList('user:'+ req.query.userName +':picks',function(value, error){
+
       console.log('value:',value)
       console.log('error:',error)
       if(!error){
@@ -97,7 +98,7 @@ app.get('/getAllPicks', function(req, res, next) {
 
 app.get('/getCredits', function(req, res, next) {
     console.log('testCreds:',req.query)
-    redisManager.getList('user:credit', function(value, error){
+    redisManager.getList('week:2:credits', function(value, error){
 
         if(req.query.userName){
           for(i=0; i<value.length; i++){
@@ -116,6 +117,21 @@ app.get('/getServerTime', function(req, res, next) {
     console.log('getServerTime')
     var now = new Date()
     res.send(now)
+});
+
+app.get('/getResults', function(req, res, next) {
+    if(req.query.weekNumber){
+      redisManager.getList('week:'+req.query.weekNumber+':results', function(value, error){
+          var weekResults = []
+          for(i=0; i<value.length; i++){
+            var parsedValue = JSON.parse(value[i])
+            weekResults.push(parsedValue)
+          }
+          res.send(weekResults)
+      })
+    }else{
+      res.send('Please provide a week number')
+    }
 });
 
 app.post('/makePick', function(req, res, next) {
@@ -161,9 +177,9 @@ app.post('/deletePick', function(req, res, next) {
     redisManager.addToList('transactions', JSON.stringify(transaction))
 });
 
-app.get('/calculateResults', function(req, res, next) {
+app.post('/calculateResults', function(req, res, next) {
 
-  calc.getGamesFeed.then(function(games){
+  calc.getGamesFeed(calc.getCurrentWeek()).then(function(games){
     console.log('we have ', games.length, ' games today')
     redisManager.getUserPicksKeys(function(userPickKeys, error){
       console.log('we have ', userPickKeys.length, ' users')
@@ -175,7 +191,9 @@ app.get('/calculateResults', function(req, res, next) {
       Promise.all(getUserPicksPromises).then(function(userPicksArray){
         var findGameForPickPromises = []
         var allPicksCount = 0
+
         for(var i=0; i<userPicksArray.length; i++){
+
           for(var x=0; x<userPicksArray[i].picks.length; x++){
             allPicksCount = allPicksCount + 1
             var pickJson = userPicksArray[i].picks[x]
@@ -200,40 +218,77 @@ app.get('/calculateResults', function(req, res, next) {
 
           }
           Promise.all(gradePicksPromises).then(function(pickResults){
-            console.log('done grading everything')
-            console.log(pickResults.length)
+            console.log('done grading ',pickResults.length,' picks')
 
-            // console.log(pickResults)
+            var picksKey = 'week:' + calc.getCurrentWeek() + ':results'
+            console.log(picksKey)
 
-            var userArray = []
-            var creditsArray = []
+            var userArray =[]
+            var scoresArray = []
+
+            for(var i=0; i<pickResults.length; i++){
+              console.log(pickResults[i].userName)
+              var p = pickResults[i]
+              var creditChange = calc.calculateCreditChange(p)
+              // console.log('Scoring ', i+1, '/', pickResults.length,  ' ', p.userName, ' ',creditChange)
+              var userArrayPosition = userArray.indexOf(p.userName)
+              if(userArrayPosition==-1){
+                userArray.push(p.userName)
+                userArrayPosition = userArray.indexOf(p.userName)
+                scoresArray[userArrayPosition] = creditChange
+              }else{
+                scoresArray[userArrayPosition] = scoresArray[userArrayPosition] + creditChange
+              }
+              pickResults[i].creditChange = creditChange
+
+              var prettyPrint = ''
+              if(p.pickType=='parlay'){
+                prettyPrint = p.parlayGamCount + ' game parlay for ' + p.wagerAmount + '\n'
+                for(var x=0; x<p.games.length; x++){
+                  prettyPrint += '    ' + calc.prettyPrintPick(p.games[x])
+                  if(x+1!=p.games.length) {
+                    prettyPrint += '\n'
+                  }
+                }
+              }else{
+                prettyPrint = calc.prettyPrintPick(p)
+              }
+              console.log(prettyPrint)
+              pickResults[i].prettyPrint = prettyPrint
+            }
+            var prevWeekNum = calc.getCurrentWeek() - 1
+            var previousWeekCreditsKey = 'week:' + prevWeekNum + ':credits'
+            redisManager.getList(previousWeekCreditsKey, function(value, error){
+
+              // console.log(previousWeekCreditsKey,' ',value)
+
+              var weekCreditsKey = 'week:' + calc.getCurrentWeek() + ':credits'
+              console.log('userArray:', userArray)
+              for(var i=0; i<userArray.length; i++){
+                console.log(userArray[i], ' ', scoresArray[i])
+                console.log(value.length)
+                var prevWeekCredits = 0
+                for(var t=0; t<value.length; t++){
+                  var valueJson = JSON.parse(value[t])
+                  if(valueJson.userName==userArray[i]){
+                    prevWeekCredits = valueJson.creditAmount
+                    break;
+                  }
+                }
+                console.log('previous credit for ', userArray[i], ': ', prevWeekCredits)
+                console.log('this week ', userArray[i], ': ', scoresArray[i])
+                var newCredits = prevWeekCredits + scoresArray[i]
+                var entry = {userName: userArray[i], creditAmount: newCredits}
+                console.log(entry)
+                redisManager.addToList(weekCreditsKey,JSON.stringify(entry))
+              }
+            })
+
 
             for(var i=0; i<pickResults.length; i++){
               var p = pickResults[i]
-
-              console.log(p)
-              // console.log(p.betResult, p.userName, p.wagerAmount)
-              //
-              // // console.log(userArray.indexOf(p.userName))
-              // if(userArray.indexOf(p.userName) == -1){
-              //   userArray.push(p.userName)
-              //   if(p.betResult=='LOSER'){
-              //     creditsArray.push(p.wagerAmount)
-              //   }else{
-              //     // how much to win?
-              //   }
-              // }else{
-              //   if(p.betResult=='LOSER'){
-              //     // need to decrement amount here
-              //   }else{
-              //     // how much to win?
-              //     // need to increment amount here
-              //   }
-              // }
-
+              redisManager.addToList(picksKey,JSON.stringify(p))
             }
-
-            console.log(userArray)
             res.send(pickResults)
           })
         })

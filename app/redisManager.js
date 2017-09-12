@@ -35,6 +35,7 @@ function getList(key, callback){
     if(err){
       callback(null, err)
     }else{
+      // console.log('items:', items)
       callback(items, null)
     }
   })
