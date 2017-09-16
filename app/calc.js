@@ -46,7 +46,7 @@ var getGamesFeed = function(weekNo){
 
 var getUserPicks = function(userPicksKey){
   return new Promise(function(resolve,reject){
-    console.log('userPicksKey', userPicksKey)
+    // console.log('userPicksKey', userPicksKey)
     redisManager.getList(userPicksKey, function(userPicks){
       console.log('userPicks',userPicks)
       var userPicsObj = {
@@ -75,20 +75,15 @@ var filterPicksByWeek = function(userPicks){
   return filteredPicks
 }
 
-var getAllUserPicks = function(userPickKeys){
+var getAllUserPicks = function(userPickKey){
   return new Promise(function(resolve, reject){
-    var usersPicksArray = []
-    for(var i=0; i<userPickKeys.length; i++){
-      redisManager.getList(userPickKeys[i], function(userPicks){
-        var userPicks = {
-          // userName: userPickKeys[i].split(':')[1],
-          picks: userPicks
+      redisManager.getList(userPickKey, function(userPicks){
+        var parsedPicks = []
+        for(var i=0; i<userPicks.length; i++){
+          parsedPicks.push(JSON.parse(userPicks[i]))
         }
-
-        usersPicksArray.push(userPicks)
+        resolve(parsedPicks)
       })
-    }
-    resolve(usersPicksArray)
   })
 }
 
@@ -215,7 +210,7 @@ var didSingleGameBetWin = function(pick, game){
       console.log('-------------------------------')
     }else{
       console.log('Not grading game, as it is not over:', pick.gameTime )
-      console.log(pick, game)
+      // console.log(pick, game)
     }
     resolve(pickResult)
   })

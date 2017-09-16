@@ -88,7 +88,7 @@ app.get('/getAllPicks', function(req, res, next) {
   redisManager.getUserPicksKeys(function(userPickKeys, error){
     var getUserPicksPromises = []
     for(var i=0; i<userPickKeys.length; i++){
-      getUserPicksPromises.push(calc.getUserPicks(userPickKeys[i]))
+      getUserPicksPromises.push(calc.getAllUserPicks(userPickKeys[i]))
     }
     Promise.all(getUserPicksPromises).then(function(userPicksArray){
       res.send(userPicksArray)
@@ -131,6 +131,23 @@ app.get('/getResults', function(req, res, next) {
       })
     }else{
       res.send('Please provide a week number')
+    }
+});
+
+app.get('/getTransactions', function(req, res, next) {
+    if(req.query.event){
+      redisManager.getList('transactions', function(value, error){
+          var weekResults = []
+          for(i=0; i<value.length; i++){
+            var parsedValue = JSON.parse(value[i])
+            if(parsedValue.event==req.query.event){
+              weekResults.push(parsedValue)
+            }
+          }
+          res.send(weekResults)
+      })
+    }else{
+      res.send('Please provide an event (makePick, deletePick, etc.)')
     }
 });
 
@@ -225,6 +242,10 @@ app.post('/calculateResults', function(req, res, next) {
 
             var userArray =[]
             var scoresArray = []
+            /*
+            calculateCreditChange, and appending to the pickResult
+            creating a scoresArray based on the credit change
+            */
 
             for(var i=0; i<pickResults.length; i++){
               console.log(pickResults[i].userName)
@@ -280,14 +301,14 @@ app.post('/calculateResults', function(req, res, next) {
                 var newCredits = prevWeekCredits + scoresArray[i]
                 var entry = {userName: userArray[i], creditAmount: newCredits}
                 console.log(entry)
-                redisManager.addToList(weekCreditsKey,JSON.stringify(entry))
+                // redisManager.addToList(weekCreditsKey,JSON.stringify(entry))
               }
             })
-
+            console.log('im out')
 
             for(var i=0; i<pickResults.length; i++){
               var p = pickResults[i]
-              redisManager.addToList(picksKey,JSON.stringify(p))
+              // redisManager.addToList(picksKey,JSON.stringify(p))
             }
             res.send(pickResults)
           })
