@@ -9,12 +9,9 @@ app.controller("standingsController", function($scope, $http) {
       console.log('getStandings')
       $http({
         method: 'GET',
-        url: '/getCredits'
+        url: '/getCreditsNew'
       }).then(function successCallback(response) {
-          $scope.credits = []
-          for(var i=0; i<response.data.length; i++){
-            $scope.credits.push(JSON.parse(response.data[i]))
-          }
+          $scope.credits = response.data
 
           console.log('$scope.credits:', $scope.credits)
         }, function errorCallback(response) {

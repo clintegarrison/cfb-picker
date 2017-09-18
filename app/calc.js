@@ -46,9 +46,8 @@ var getGamesFeed = function(weekNo){
 
 var getUserPicks = function(userPicksKey){
   return new Promise(function(resolve,reject){
-    // console.log('userPicksKey', userPicksKey)
     redisManager.getList(userPicksKey, function(userPicks){
-      console.log('userPicks',userPicks)
+      // console.log('userPicks',userPicks)
       var userPicsObj = {
         userName: userPicksKey.split(':')[1],
         picks: filterPicksByWeek(userPicks)
@@ -148,7 +147,7 @@ var findGamesForParlay = function(pickJson, games){
 
 var findGameForPick = function(pick, games){
   return new Promise(function(resolve, reject){
-    console.log('pick')
+    // console.log('pick')
     var pickTeam = pick.pickTeam
     var oppTeam = pick.opponentTeam
 
@@ -210,7 +209,7 @@ var didSingleGameBetWin = function(pick, game){
       console.log('-------------------------------')
     }else{
       console.log('Not grading game, as it is not over:', pick.gameTime )
-      // console.log(pick, game)
+      console.log(pick, game)
     }
     resolve(pickResult)
   })
@@ -507,6 +506,18 @@ var prettyPrintMoneyLinePick = function(result){
   return '  ' + result.pickTeam + '(' + result.pickTeamScore + ') ' + result.pickNumber + ' odds \nvs ' + result.opponentTeam + '(' + result.opponentTeamScore + ')'
 }
 
+var getFinalResultsPicks = function(weekResultsKeys){
+  return new Promise(function(resolve, reject){
+    redisManager.getList(weekResultsKeys, function(userPicks){
+      var parsedUserPicks = []
+      for(var i=0; i<userPicks.length; i++){
+        parsedUserPicks.push(JSON.parse(userPicks[i]))
+      }
+      resolve(parsedUserPicks)
+    })
+  })
+}
+
 var calc = {
 	getGamesFeed: getGamesFeed,
   getAllUserPicks: getAllUserPicks,
@@ -517,7 +528,8 @@ var calc = {
   didParlayBetWin: didParlayBetWin,
   getCurrentWeek: getCurrentWeek,
   calculateCreditChange: calculateCreditChange,
-  prettyPrintPick: prettyPrintPick
+  prettyPrintPick: prettyPrintPick,
+  getFinalResultsPicks: getFinalResultsPicks
 }
 
 module.exports = calc;

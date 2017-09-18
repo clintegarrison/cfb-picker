@@ -78,7 +78,8 @@ app.controller("picksController", function ($scope, $http, $mdDialog, authServic
           pickType: "parlay",
           pickAmount: pickAmount,
           userName: authService.getUserName(),
-          parlays:  parlayService.getParlays()
+          parlays:  parlayService.getParlays(),
+          weekNumber: weekService.getCurrentWeek()
         }
 
         console.log('parylayPick', parylayPick)

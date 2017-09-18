@@ -4,7 +4,19 @@
       <div class="md-toolbar-tools">My Messages</div>
     </md-toolbar> -->
   <md-content flex>
+
     <section>
+      <md-list layout-padding>
+        <md-subheader class="md-primary">Week Three Results</md-subheader>
+        <md-list-item class="md-3-line" ng-repeat="result in weekThreeResults">
+          <div class="md-list-item-text" layout="column" ng-class-odd="'odd'" ng-class-even="'even'">
+            <h3 >{{result.userName}} <span data-ng-style="result.creditChange < 0 && {'color':'red'} || result.creditChange > 0 && {'color':'green'}">{{result.creditChange}}</span></h3>
+            <h4 style="white-space: pre-wrap;">{{result.prettyPrint}}</h4>
+          </div>
+        </md-list-item>
+      </md-list>
+    </section>
+
       <md-list layout-padding>
         <md-subheader class="md-primary">Week Two Results</md-subheader>
         <md-list-item class="md-3-line" ng-repeat="result in weekTwoResults">
