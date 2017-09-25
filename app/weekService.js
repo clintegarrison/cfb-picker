@@ -6,15 +6,15 @@ app.service('weekService', function(){
     new Date("2017/9/5"),
     new Date("2017/9/12"),
     new Date("2017/9/19"),
-    new Date("2017/9/26"),
-    new Date("2017/10/3"),
-    new Date("2017/10/10"),
-    new Date("2017/10/17"),
-    new Date("2017/10/24"),
-    new Date("2017/10/30"),
-    new Date("2017/11/6"),
-    new Date("2017/11/13"),
-    new Date("2017/11/20")
+    new Date("2017/9/24"),
+    new Date("2017/10/1"),
+    new Date("2017/10/8"),
+    new Date("2017/10/15"),
+    new Date("2017/10/22"),
+    new Date("2017/10/28"),
+    new Date("2017/11/4"),
+    new Date("2017/11/11"),
+    new Date("2017/11/18")
   ]
 
   this.getCurrentWeek = function(){
