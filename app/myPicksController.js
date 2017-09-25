@@ -96,53 +96,19 @@ app.controller("myPicksController", function ($scope, $http, authService) {
                   var disabledPick = false
 
                   console.log('jsonPick.gameTime:',jsonPick.gameTime)
+
+                  // check if it's been fifteen minutes since pick time
+                  var now = new Date()
+                  var pickTime = null
                   if(jsonPick.pickType=="parlay"){
-                    for(var a=0; a<jsonPick.parlays.length; a++){
-                      jsonPick.parlays[a]
-                      var gameStart = new Date()
-                      gameStart.setMonth(jsonPick.parlays[a].gameTime.substring(0,2) - 1, jsonPick.parlays[a].gameTime.substring(3,5))
-                      console.log('am/pm:',jsonPick.parlays[a].gameTime.slice(-2))
-                      var hours = 0;
-                      if(jsonPick.parlays[a].gameTime.slice(-2) == 'PM'){
-                        hours = 12 + parseInt(jsonPick.parlays[a].gameTime.substring(jsonPick.parlays[a].gameTime.indexOf(' '), jsonPick.parlays[a].gameTime.indexOf(':')))
-                      }else{
-                        hours = jsonPick.parlays[i].gameTime.substring(jsonPick.parlays[a].gameTime.indexOf(' '), jsonPick.parlays[a].gameTime.indexOf(':'))
-                      }
-                      console.log('hours:', hours)
-                      gameStart.setHours(hours)
-                      var minsSubStr = jsonPick.parlays[a].gameTime.substring(jsonPick.parlays[a].gameTime.indexOf(':'), jsonPick.parlays[a].gameTime.length)
-                      console.log('minutes:', minsSubStr.substring(1, minsSubStr.indexOf(' ')))
-                      gameStart.setMinutes(minsSubStr.substring(1, minsSubStr.indexOf(' ')))
-                      console.log('gameStart:',gameStart)
-                      var now = new Date()
-                      if(gameStart < now){
-                        disabledPick = true
-                        break;
-                      }
-                    }
+                    pickTime = new Date(jsonPick.parlays[0].timestamp)
                   }else{
-                    var gameStart = new Date()
-                    gameStart.setMonth(jsonPick.gameTime.substring(0,2) - 1, jsonPick.gameTime.substring(3,5))
-                    console.log('am/pm:',jsonPick.gameTime.slice(-2))
-                    var hours = 0;
-                    if(jsonPick.gameTime.slice(-2) == 'PM'){
-                      hours = 12 + parseInt(jsonPick.gameTime.substring(jsonPick.gameTime.indexOf(' '), jsonPick.gameTime.indexOf(':')))
-                    }else{
-                      hours = jsonPick.gameTime.substring(jsonPick.gameTime.indexOf(' '), jsonPick.gameTime.indexOf(':'))
-                    }
-                    console.log('hours:', hours)
-                    gameStart.setHours(hours)
-                    var minsSubStr = jsonPick.gameTime.substring(jsonPick.gameTime.indexOf(':'), jsonPick.gameTime.length)
-                    console.log('minutes:', minsSubStr.substring(1, minsSubStr.indexOf(' ')))
-                    gameStart.setMinutes(minsSubStr.substring(1, minsSubStr.indexOf(' ')))
-                    console.log('gameStart:',gameStart)
-                    var now = new Date()
-                    if(gameStart < now){
-                      disabledPick = true
-                    }
+                    pickTime = new Date(jsonPick.timestamp)
                   }
-
-
+                  var pickPlusFifteen = new Date(pickTime.getTime() + 15*60000);
+                  if(pickPlusFifteen < now){
+                    disabledPick = true
+                  }
 
                   var newJsonPick = {
                     pickNumber: i,

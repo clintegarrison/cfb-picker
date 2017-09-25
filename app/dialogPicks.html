@@ -3,9 +3,7 @@
   <section layout="row">
     <md-input-container>
       <label>Wager Amount</label>
-      <md-select style="width:120px" ng-model="pickAmount">
-        <!-- <md-option ng-selected="true" value="110">110</md-option>
-        <md-option value="220">220</md-option> -->
+      <md-select style="width:120px" ng-model="pickAmount">>
         <md-option ng-repeat="wagerAmount in sharedPicksController.wagerAmounts" ng-value="{{wagerAmount}}">{{wagerAmount}}</md-option>
       </md-select>
     </md-input-container>

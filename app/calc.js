@@ -449,7 +449,11 @@ var calculateCreditChange = function(result){
     return 0
   }
   else if(result.pickType=='spread' || result.pickType=='totals'){
-    if(result.wagerAmount==220){
+    if(result.wagerAmount==440){
+      return 400
+    }else if(result.wagerAmount==330){
+      return 300
+    }else if(result.wagerAmount==220){
       return 200
     }else if(result.wagerAmount==110){
       return 100

@@ -110,11 +110,11 @@ app.get('/cleanupPicks', function(req, res, next) {
         for(var z=0; z<singleUserPicks.length; z++){
           var p = singleUserPicks[z]
           if(p.pickType != 'parlay'){
-            if(p.timestamp.includes("2017-09-18")){
+            if(p.timestamp.includes("2017-09-19")){
               picksToChange.push(p)
             }
           }else{
-            if(p.parlays[0].timestamp.includes("2017-09-18")){
+            if(p.parlays[0].timestamp.includes("2017-09-19")){
               picksToChange.push(p)
             }
           }

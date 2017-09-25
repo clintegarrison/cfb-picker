@@ -42,7 +42,7 @@ app.controller("picksController", function ($scope, $http, $mdDialog, authServic
     if(parlayService.getParlays().length > 0){
       $scope.wagerAmounts = [50,100]
     }else{
-      $scope.wagerAmounts = [110,220]
+      $scope.wagerAmounts = [110,220,330,440]
     }
   }
 
@@ -180,7 +180,7 @@ app.controller("picksController", function ($scope, $http, $mdDialog, authServic
     if(pickType==="moneyLine" || parlayService.getParlays().length > 0){
       $scope.wagerAmounts = [50,100]
     }else{
-      $scope.wagerAmounts = [110,220]
+      $scope.wagerAmounts = [110,220,330,440]
     }
     console.log('$scope.parlayEnabled:',$scope.disableParlay)
 
