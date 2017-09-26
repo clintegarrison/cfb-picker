@@ -7,6 +7,7 @@ var redisManager = require('./app/redisManager')
 var http = require('http')
 var utils = require('./app/pickUtils')
 var calc = require('./app/calc')
+var dbManager = require('./app/databaseManager')
 
 app.use(cookieParser());
 app.use(bodyParser.json());
@@ -363,9 +364,21 @@ app.post('/calculateResults', function(req, res, next) {
       })
     })
   })
-
-  // res.send('done')
 })
+
+
+
+
+
+
+
+
+
+app.get('/dbTest', function(req, res, next) {
+    dbManager.query('SELECT user_name FROM users').then(function(result){
+      res.send(result)
+    })
+});
 
 
 app.all('/*', function(req, res, next) {
