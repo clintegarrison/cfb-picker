@@ -20,27 +20,30 @@ app.use(express.static(__dirname + '/app'));
 
 app.post('/register', function(req, res, next) {
     console.log('register:',req.body)
-    var key = "user:" + req.body.userName;
-    var value = {
-      userName: req.body.userName,
-      password: req.body.passwordOne,
-      email: req.body.email
-    }
-    redisManager.setKeyValue(key, JSON.stringify(value))
+    // var key = "user:" + req.body.userName;
+    // var value = {
+    //   userName: req.body.userName,
+    //   password: req.body.passwordOne,
+    //   email: req.body.email
+    // }
 
-    var userCredits = {
-      userName: req.body.userName,
-      creditAmount: 2500
-    }
-    redisManager.addToList('user:credits', JSON.stringify(userCredits))
+    dbManager.createUser(req.body.userName, req.body.passwordOne, req.body.email)
 
-    var transaction = {
-      event: 'register',
-      serverTimestamp: new Date(),
-      ipAddress: req.ip,
-      log: req.body
-    }
-    redisManager.addToList('transactions', JSON.stringify(transaction))
+    // redisManager.setKeyValue(key, JSON.stringify(value))
+    //
+    // var userCredits = {
+    //   userName: req.body.userName,
+    //   creditAmount: 2500
+    // }
+    // redisManager.addToList('user:credits', JSON.stringify(userCredits))
+    //
+    // var transaction = {
+    //   event: 'register',
+    //   serverTimestamp: new Date(),
+    //   ipAddress: req.ip,
+    //   log: req.body
+    // }
+    // redisManager.addToList('transactions', JSON.stringify(transaction))
 
     res.send('registered')
 });
@@ -374,8 +377,14 @@ app.post('/calculateResults', function(req, res, next) {
 
 
 
-app.get('/dbTest', function(req, res, next) {
-    dbManager.query('SELECT user_name FROM users').then(function(result){
+app.get('/dbTestRead', function(req, res, next) {
+    dbManager.read('SELECT user_name FROM users').then(function(result){
+      res.send(result)
+    })
+});
+
+app.get('/dbTestUpdate', function(req, res, next) {
+    dbManager.update('UPDATE users SET user_name=$1',['teast']).then(function(result){
       res.send(result)
     })
 });
