@@ -52,6 +52,18 @@ app.controller("resultsController", function ($scope, $http) {
               console.log(response)
               $scope.isLoading = false
             });
+
+            $http({
+              method: 'GET',
+              url: '/getResults?weekNumber=5'
+            }).then(function successCallback(response) {
+                console.log(typeof response.data)
+                $scope.weekFiveResults = response.data
+                $scope.isLoading = false
+              }, function errorCallback(response) {
+                console.log(response)
+                $scope.isLoading = false
+              });
   }
 
   $scope.getResults()

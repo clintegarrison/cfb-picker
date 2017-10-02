@@ -9,6 +9,8 @@ var utils = require('./app/pickUtils')
 var calc = require('./app/calc')
 var dbManager = require('./app/databaseManager')
 
+var dataMover = require('./app/dataMover')
+
 app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
@@ -377,16 +379,9 @@ app.post('/calculateResults', function(req, res, next) {
 
 
 
-app.get('/dbTestRead', function(req, res, next) {
-    dbManager.read('SELECT user_name FROM users').then(function(result){
-      res.send(result)
-    })
-});
-
-app.get('/dbTestUpdate', function(req, res, next) {
-    dbManager.update('UPDATE users SET user_name=$1',['teast']).then(function(result){
-      res.send(result)
-    })
+app.get('/dataMover', function(req, res, next) {
+    dataMover.movePicks()
+    res.send('k')
 });
 
 

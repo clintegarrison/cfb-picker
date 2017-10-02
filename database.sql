@@ -11,11 +11,12 @@ CREATE TABLE credits (
   user_name VARCHAR(40) PRIMARY KEY,
   credits INTEGER
 )
+select * from credits
 
 CREATE TABLE wagers (
   wager_id SERIAL PRIMARY KEY,
   user_name VARCHAR(40),
-  wager_amount INTEGER
+  wager_amount INTEGER,
   wager_status VARCHAR(10) --pending,loser,winner,push
 )
 insert into wagers(user_name,wager_amount,wager_status) values('ClintG',220,'pending')

@@ -12,6 +12,19 @@ function createUser(userName, password, email){
   )
 }
 
+function createWager(userName, wagerAmount){
+  return new Promise(
+    function(resolve, reject){
+      executeQuery('INSERT INTO wagers (user_name,wager_amount,wager_status) VALUES($1,$2,$3) RETURNING wager_id', [userName, wagerAmount,'TBD'])
+      .then(function(result){
+        console.log('createWager result:', result)
+        resolve(result[0].wager_id)
+      })
+    }
+  )
+}
+
+
 function executeQuery(sql, args){
   return new Promise(
     function(resolve, reject){
@@ -22,6 +35,7 @@ function executeQuery(sql, args){
         for(var i=0; i<res.rows.length; i++){
           results.push(res.rows[i])
         }
+        console.log('results:',results)
         resolve(results)
       })
       .catch(e => {
@@ -32,7 +46,8 @@ function executeQuery(sql, args){
 }
 
 var databaseManager = {
-	createUser: createUser
+	createUser: createUser,
+  createWager: createWager
 }
 
 module.exports = databaseManager;
