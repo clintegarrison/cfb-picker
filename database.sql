@@ -19,6 +19,7 @@ CREATE TABLE wagers (
   wager_amount INTEGER,
   wager_status VARCHAR(10) --pending,loser,winner,push
 )
+select * from wagers
 insert into wagers(user_name,wager_amount,wager_status) values('ClintG',220,'pending')
 
 CREATE TABLE picks (
@@ -41,13 +42,15 @@ drop table picks
 CREATE TABLE games (
   game_id SERIAL PRIMARY KEY,
   game_status VARCHAR(10),
+  game_time  TIMESTAMP WITH TIME ZONE,
   team_one VARCHAR(20),
   team_two VARCHAR(20),
   team_one_score INTEGER,
   team_two_score INTEGER
 )
+select * from games
 
-insert into games(game_key,game_status,team_one,team_two,team_one_score,team_two_score) 
+insert into games(game_status,team_one,team_two,team_one_score,team_two_score) 
 values (9,'Final','Alabama','Auburn',42,17)
 -- generate the game ID in this table first.. THEN associate with the pick
 

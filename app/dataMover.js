@@ -9,10 +9,19 @@ function movePicks(){
       var jsonPick = JSON.parse(picks[i])
       console.log(jsonPick)
     }
-    dbManager.createWager('clint', 200).then(function(id){
-        console.log('rez:', id)
+    dbManager.createWager('clint', 200).then(function(wagerId){
+        console.log('wagerId:', wagerId)
+
+        // does game exist?
+        dbManager.doesGameExist(null,'teamOne','teamTwo').then(function(gameExists){
+          if(!gameExists){
+            dbManager.createGame(null,'bama','auburn')
+          }
+        })
+
+        // if not.. create game
       }
-    )
+    ).then(function(){console.log('DDDDDDDDDDDDDD:')})
   })
 }
 

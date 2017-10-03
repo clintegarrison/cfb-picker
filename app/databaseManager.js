@@ -24,6 +24,30 @@ function createWager(userName, wagerAmount){
   )
 }
 
+function doesGameExist(gameTime,teamOne,teamTwo){
+  return new Promise(
+    function(resolve, reject){
+      executeQuery('SELECT game_status FROM games WHERE game_time=$1 AND team_one=$2 AND team_two=$3', [gameTime, teamOne, teamTwo])
+      .then(function(result){
+        console.log('doesGameExist result:', result)
+        resolve(result.length > 0 ? true : false)
+      })
+    }
+  )
+}
+
+function createGame(gameTime,teamOne,teamTwo,){
+  return new Promise(
+    function(resolve, reject){
+      executeQuery('INSERT INTO games (game_status,game_time,team_one,team_two,team_one_score,team_two_score) VALUES($1,$2,$3,$4,$5,$6) RETURNING game_id', ['TBD', gameTime, teamOne, teamTwo, 0, 0])
+      .then(function(result){
+        console.log('createGame result:', result)
+        resolve(result[0].wager_id)
+      })
+    }
+  )
+}
+
 
 function executeQuery(sql, args){
   return new Promise(
@@ -47,7 +71,10 @@ function executeQuery(sql, args){
 
 var databaseManager = {
 	createUser: createUser,
-  createWager: createWager
+  createWager: createWager,
+  doesGameExist: doesGameExist,
+  createGame: createGame
+
 }
 
 module.exports = databaseManager;
