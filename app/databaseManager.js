@@ -36,7 +36,7 @@ function doesGameExist(gameTime,teamOne,teamTwo){
   )
 }
 
-function createGame(gameTime,teamOne,teamTwo,){
+function createGame(gameTime,teamOne,teamTwo){
   return new Promise(
     function(resolve, reject){
       executeQuery('INSERT INTO games (game_status,game_time,team_one,team_two,team_one_score,team_two_score) VALUES($1,$2,$3,$4,$5,$6) RETURNING game_id', ['TBD', gameTime, teamOne, teamTwo, 0, 0])
