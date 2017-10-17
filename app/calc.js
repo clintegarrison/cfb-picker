@@ -165,12 +165,12 @@ var findGameForPick = function(pick, games){
         if(games[q].teamTwo.includes(oppTeam)){
           break;
         }
-      }else if(games[q].teamTwo.includes(pickTeam)){
+      }else if(games[q].teamTwo.includes(pickTeam) && games[q].teamTwoScore != ''){
         game = games[q];
         if(games[q].teamOne.includes(oppTeam)){
           break;
         }
-      }else if(games[q].teamOne.includes(oppTeam)){
+      }else if(games[q].teamOne.includes(oppTeam) && games[q].teamTwoScore != ''){
         game = games[q];
         if(games[q].teamTwo.includes(pickTeam)){
           break;
@@ -185,7 +185,7 @@ var findGameForPick = function(pick, games){
     if(game==null){
       console.log('SHIT SHIT SHIT, cannnot find: ', pick.pickType, ' ',pickTeam, ' ', pick.gameTime)
     }else{
-      // console.log('found it!')
+      //found it
     }
     var resolved = {
       pick: pick,
@@ -438,7 +438,7 @@ var getCurrentWeek = function(){
       break;
     }
   }
-  return 7
+  return currentWeek
 }
 
 var calculateCreditChange = function(result){
