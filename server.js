@@ -52,19 +52,12 @@ app.post('/register', function(req, res, next) {
 
 app.post('/authenticate', function(req, res, next) {
     console.log('authenticate:',req.body)
-    redisManager.getValueByKey('user:'+req.body.userName, function(value, error){
-        console.log('value:',value)
-        console.log('error:',error)
-        if(!error){
-          // user found, not validate the passwords match
-          if(req.body.password===JSON.parse(value).password){
-            res.send("authenticated")
-          }else{
-            res.status(401).send('Invalid Credentials')
-          }
-        }else{
-          res.status(401).send('User Not Found')
-        }
+    dbManager.authenticateUser(req.body.userName, req.body.password, function(authenticated){
+      if(authenticated){
+        res.send("authenticated")
+      }else{
+        res.status(401).send('Invalid Credentials')
+      }
     })
 
     var transaction = {
@@ -102,64 +95,64 @@ app.get('/getAllPicks', function(req, res, next) {
   })
 });
 
-app.get('/cleanupPicks', function(req, res, next) {
-  redisManager.getUserPicksKeys(function(userPickKeys, error){
-    var getUserPicksPromises = []
-    for(var i=0; i<userPickKeys.length; i++){
-      getUserPicksPromises.push(calc.getAllUserPicks(userPickKeys[i]))
-    }
-    Promise.all(getUserPicksPromises).then(function(userPicksArray){
-      var picksToChange = []
-      console.log(userPicksArray.length)
-      for(var x=0; x<userPicksArray.length; x++){
-        var singleUserPicks = userPicksArray[x]
-        for(var z=0; z<singleUserPicks.length; z++){
-          var p = singleUserPicks[z]
-          if(p.pickType != 'parlay'){
-            if(p.timestamp.includes("2017-09-19")){
-              picksToChange.push(p)
-            }
-          }else{
-            if(p.parlays[0].timestamp.includes("2017-09-19")){
-              picksToChange.push(p)
-            }
-          }
-        }
+// app.get('/cleanupPicks', function(req, res, next) {
+//   redisManager.getUserPicksKeys(function(userPickKeys, error){
+//     var getUserPicksPromises = []
+//     for(var i=0; i<userPickKeys.length; i++){
+//       getUserPicksPromises.push(calc.getAllUserPicks(userPickKeys[i]))
+//     }
+//     Promise.all(getUserPicksPromises).then(function(userPicksArray){
+//       var picksToChange = []
+//       console.log(userPicksArray.length)
+//       for(var x=0; x<userPicksArray.length; x++){
+//         var singleUserPicks = userPicksArray[x]
+//         for(var z=0; z<singleUserPicks.length; z++){
+//           var p = singleUserPicks[z]
+//           if(p.pickType != 'parlay'){
+//             if(p.timestamp.includes("2017-09-19")){
+//               picksToChange.push(p)
+//             }
+//           }else{
+//             if(p.parlays[0].timestamp.includes("2017-09-19")){
+//               picksToChange.push(p)
+//             }
+//           }
+//         }
+//
+//         for(var w=0; w<picksToChange.length; w++){
+//           var key = 'user:' + picksToChange[w].userName + ':picks'
+//           var pick = picksToChange[w]
+//           redisManager.removeFromList(key, JSON.stringify(pick))
+//
+//           var newPick = picksToChange[w]
+//           newPick.weekNumber=4
+//
+//           console.log(newPick)
+//
+//           redisManager.addToList(key, JSON.stringify(newPick))
+//         }
+//       }
+//       res.send(picksToChange)
+//     })
+//   })
+// });
 
-        for(var w=0; w<picksToChange.length; w++){
-          var key = 'user:' + picksToChange[w].userName + ':picks'
-          var pick = picksToChange[w]
-          redisManager.removeFromList(key, JSON.stringify(pick))
-
-          var newPick = picksToChange[w]
-          newPick.weekNumber=4
-
-          console.log(newPick)
-
-          redisManager.addToList(key, JSON.stringify(newPick))
-        }
-      }
-      res.send(picksToChange)
-    })
-  })
-});
-
-app.get('/getCredits', function(req, res, next) {
-    console.log('testCreds:',req.query)
-    redisManager.getList('week:2:credits', function(value, error){
-
-        if(req.query.userName){
-          for(i=0; i<value.length; i++){
-            var parsedValue = JSON.parse(value[i])
-            if(parsedValue.userName===req.query.userName){
-              res.send(parsedValue)
-            }
-          }
-        }else{
-          res.send(value)
-        }
-    })
-});
+// app.get('/getCredits', function(req, res, next) {
+//     console.log('testCreds:',req.query)
+//     redisManager.getList('week:2:credits', function(value, error){
+//
+//         if(req.query.userName){
+//           for(i=0; i<value.length; i++){
+//             var parsedValue = JSON.parse(value[i])
+//             if(parsedValue.userName===req.query.userName){
+//               res.send(parsedValue)
+//             }
+//           }
+//         }else{
+//           res.send(value)
+//         }
+//     })
+// });
 
 app.get('/getCreditsNew', function(req, res, next) {
   var currentWeek = calc.getCurrentWeek()
@@ -379,11 +372,34 @@ app.post('/calculateResults', function(req, res, next) {
 
 
 
-app.get('/dataMover', function(req, res, next) {
+app.get('/movePicks', function(req, res, next) {
     dataMover.movePicks()
     res.send('k')
 });
 
+app.get('/moveUsers', function(req, res, next) {
+    dataMover.moveUsers()
+    res.send('k')
+});
+
+app.get('/updateGameScores', function(req, res, next) {
+    dataMover.updateGameScores()
+    res.send('k')
+});
+
+app.get('/startMovePicks', function(req, res, next) {
+    dataMover.startMovePicks()
+    res.send('k')
+});
+
+app.get('/callbackTest', function(req, res, next) {
+    console.log('start')
+    dbManager.executeQueryCallback('select * from games', null, function(result){
+      console.log('cb result:', result)
+    })
+    console.log('end')
+    res.send('k')
+});
 
 app.all('/*', function(req, res, next) {
     var cookie = req.cookies.authenticatedUser;

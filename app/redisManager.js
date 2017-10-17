@@ -12,7 +12,6 @@ function getValueByKey(key, callback){
     if(err){
       callback(null, err)
     }else{
-      console.log(reply)
       if(reply!==null){
         callback(reply.toString(), null)
       }else{
@@ -56,6 +55,21 @@ function getUserPicksKeys(callback){
   })
 }
 
+function getUserKeys(callback){
+  client.keys('user:*', function(err, reply) {
+    if(err){
+      callback(null, err)
+    }else{
+      console.log(reply)
+      if(reply!==null){
+        callback(reply, null)
+      }else{
+        callback(null, "not found")
+      }
+    }
+  })
+}
+
 
 var redisManager = {
 	setKeyValue: setKeyValue,
@@ -63,7 +77,8 @@ var redisManager = {
   addToList: addToList,
   getList: getList,
   removeFromList: removeFromList,
-  getUserPicksKeys: getUserPicksKeys
+  getUserPicksKeys: getUserPicksKeys,
+  getUserKeys: getUserKeys
 }
 
 module.exports = redisManager;
