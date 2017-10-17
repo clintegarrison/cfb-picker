@@ -52,13 +52,27 @@ app.post('/register', function(req, res, next) {
 
 app.post('/authenticate', function(req, res, next) {
     console.log('authenticate:',req.body)
-    dbManager.authenticateUser(req.body.userName, req.body.password, function(authenticated){
-      if(authenticated){
-        res.send("authenticated")
+    // dbManager.authenticateUser(req.body.userName, req.body.password, function(authenticated){
+    //   if(authenticated){
+    //     res.send("authenticated")
+    //   }else{
+    //     res.status(401).send('Invalid Credentials')
+    //   }
+    // })
+    redisManager.getValueByKey('user:'+req.body.userName, function(value, error){
+      console.log('value:',value)
+      console.log('error:',error)
+      if(!error){
+        // user found, not validate the passwords match
+        if(req.body.password===JSON.parse(value).password){
+          res.send("authenticated")
+        }else{
+          res.status(401).send('Invalid Credentials')
+        }
       }else{
-        res.status(401).send('Invalid Credentials')
+        res.status(401).send('User Not Found')
       }
-    })
+  })
 
     var transaction = {
       event: 'authenticate',
