@@ -7,9 +7,6 @@ client.connect()
 
 function createUser(userName, password, email){
   executeQuery('INSERT INTO users VALUES($1,$2,$3)', [userName, password, email])
-  .then(
-    executeQuery('INSERT INTO credits VALUES($1,$2)', [userName, 2500])
-  )
 }
 
 function createWager(userName, wagerAmount, pickType, callback){
@@ -71,6 +68,8 @@ function updateGameScores(gameId, teamOneScore, teamTwoScore, gameStatus, callba
     callback(result)
   })
 }
+
+
 
 function executeQuery(sql, args, callback){
     console.log('SQL=', sql)
