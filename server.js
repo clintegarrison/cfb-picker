@@ -123,11 +123,13 @@ app.get('/getAllPicks', function(req, res, next) {
 //         for(var z=0; z<singleUserPicks.length; z++){
 //           var p = singleUserPicks[z]
 //           if(p.pickType != 'parlay'){
-//             if(p.timestamp.includes("2017-09-19")){
+//             if(p.timestamp.includes("2017-10-28") && p.weekNumber===10){
+//               // console.log(p)
 //               picksToChange.push(p)
 //             }
 //           }else{
-//             if(p.parlays[0].timestamp.includes("2017-09-19")){
+//             if(p.parlays[0].timestamp.includes("2017-10-28") && p.parlays[0].weekNumber===10){
+//               // console.log(p)
 //               picksToChange.push(p)
 //             }
 //           }
@@ -136,10 +138,12 @@ app.get('/getAllPicks', function(req, res, next) {
 //         for(var w=0; w<picksToChange.length; w++){
 //           var key = 'user:' + picksToChange[w].userName + ':picks'
 //           var pick = picksToChange[w]
+//           console.log('removing pick:')
+//           console.log(pick)
 //           redisManager.removeFromList(key, JSON.stringify(pick))
 //
 //           var newPick = picksToChange[w]
-//           newPick.weekNumber=4
+//           newPick.weekNumber=9
 //
 //           console.log(newPick)
 //
@@ -151,22 +155,22 @@ app.get('/getAllPicks', function(req, res, next) {
 //   })
 // });
 
-// app.get('/getCredits', function(req, res, next) {
-//     console.log('testCreds:',req.query)
-//     redisManager.getList('week:2:credits', function(value, error){
-//
-//         if(req.query.userName){
-//           for(i=0; i<value.length; i++){
-//             var parsedValue = JSON.parse(value[i])
-//             if(parsedValue.userName===req.query.userName){
-//               res.send(parsedValue)
-//             }
-//           }
-//         }else{
-//           res.send(value)
-//         }
-//     })
-// });
+app.get('/getCredits', function(req, res, next) {
+    console.log('testCreds:',req.query)
+    redisManager.getList('week:2:credits', function(value, error){
+
+        if(req.query.userName){
+          for(i=0; i<value.length; i++){
+            var parsedValue = JSON.parse(value[i])
+            if(parsedValue.userName===req.query.userName){
+              res.send(parsedValue)
+            }
+          }
+        }else{
+          res.send(value)
+        }
+    })
+});
 
 app.get('/getCreditsNew', function(req, res, next) {
   var currentWeek = calc.getCurrentWeek()

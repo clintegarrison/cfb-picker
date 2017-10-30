@@ -426,10 +426,10 @@ var getCurrentWeek = function(){
     new Date("2017/10/8"),
     new Date("2017/10/15"),
     new Date("2017/10/22"),
-    new Date("2017/10/28"),
-    new Date("2017/11/4"),
-    new Date("2017/11/11"),
-    new Date("2017/11/18")
+    new Date("2017/10/29"),
+    new Date("2017/11/5"),
+    new Date("2017/11/12"),
+    new Date("2017/11/19")
   ]
 
   for(var i=0; i<weeks.length; i++){
