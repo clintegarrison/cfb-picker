@@ -123,12 +123,12 @@ app.get('/getAllPicks', function(req, res, next) {
 //         for(var z=0; z<singleUserPicks.length; z++){
 //           var p = singleUserPicks[z]
 //           if(p.pickType != 'parlay'){
-//             if(p.timestamp.includes("2017-10-28") && p.weekNumber===10){
+//             if(p.timestamp.includes("2017-11-04") && p.weekNumber===11){
 //               // console.log(p)
 //               picksToChange.push(p)
 //             }
 //           }else{
-//             if(p.parlays[0].timestamp.includes("2017-10-28") && p.parlays[0].weekNumber===10){
+//             if(p.parlays[0].timestamp.includes("2017-11-04") && p.parlays[0].weekNumber===11){
 //               // console.log(p)
 //               picksToChange.push(p)
 //             }
@@ -143,7 +143,7 @@ app.get('/getAllPicks', function(req, res, next) {
 //           redisManager.removeFromList(key, JSON.stringify(pick))
 //
 //           var newPick = picksToChange[w]
-//           newPick.weekNumber=9
+//           newPick.weekNumber=10
 //
 //           console.log(newPick)
 //
@@ -193,6 +193,7 @@ app.get('/getCreditsNew', function(req, res, next) {
             userArrayPosition = userArray.indexOf(p.userName)
             scoresArray[userArrayPosition] = 2500 + p.creditChange
           }else{
+            console.log(p.weekNumber, p.userName, p.creditChange)
             scoresArray[userArrayPosition] = scoresArray[userArrayPosition] + p.creditChange
           }
         }
