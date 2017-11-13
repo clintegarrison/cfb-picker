@@ -69,5 +69,6 @@ values (9,'Final','Alabama','Auburn',42,17)
 -- how to associate
 
 
+select * from picks where pick_number = -21
 
 SELECT game_id,game_status,game_time,week_number,team_one,team_two,team_one_score,team_two_score FROM games WHERE game_status='TBD' AND week_number=1
