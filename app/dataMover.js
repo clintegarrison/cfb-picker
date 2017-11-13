@@ -101,8 +101,8 @@ function createGameAndPick(p, wagerId){
   })
 }
 
-function updateGameScores(){
-  var weekNumber = 1
+function updateGameScores(weekNumber){
+
   calc.getGamesFeed(weekNumber).then(function(gameFeed){
     console.log('gameFeedLength:', gameFeed.length)
     dbManager.getGamesThatAreNotFinalByWeek(weekNumber, function(notFinalGames){
@@ -112,8 +112,11 @@ function updateGameScores(){
         for(var x=0; x<gameFeed.length; x++){
           var gf = gameFeed[x]
           var gameStatus = 'TBD'
+          // GAME STATUE IS NULL?!
           if(gf.gameState=='Final Score'){
             gameStatus = 'FINAL'
+          }else{
+            // console.log('!!!!!STATE!!!!', gameFeed[x])
           }
           if(gf.teamOne.toUpperCase() === nfg.team_one.toUpperCase()){
             dbManager.updateGameScores(nfg.game_id, Number(gf.teamOneScore), Number(gf.teamTwoScore), gameStatus, function(result){

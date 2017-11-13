@@ -123,12 +123,12 @@ app.get('/getAllPicks', function(req, res, next) {
 //         for(var z=0; z<singleUserPicks.length; z++){
 //           var p = singleUserPicks[z]
 //           if(p.pickType != 'parlay'){
-//             if(p.timestamp.includes("2017-11-04") && p.weekNumber===11){
+//             if(p.timestamp.includes("2017-11-11") && p.weekNumber===10){
 //               // console.log(p)
 //               picksToChange.push(p)
 //             }
 //           }else{
-//             if(p.parlays[0].timestamp.includes("2017-11-04") && p.parlays[0].weekNumber===11){
+//             if(p.parlays[0].timestamp.includes("2017-11-11") && p.parlays[0].weekNumber===10){
 //               // console.log(p)
 //               picksToChange.push(p)
 //             }
@@ -143,7 +143,7 @@ app.get('/getAllPicks', function(req, res, next) {
 //           redisManager.removeFromList(key, JSON.stringify(pick))
 //
 //           var newPick = picksToChange[w]
-//           newPick.weekNumber=10
+//           newPick.weekNumber=11
 //
 //           console.log(newPick)
 //
@@ -391,10 +391,10 @@ app.post('/calculateResults', function(req, res, next) {
 
 
 
-app.get('/movePicks', function(req, res, next) {
-    dataMover.movePicks()
-    res.send('k')
-});
+// app.get('/movePicks', function(req, res, next) {
+//     dataMover.movePicks()
+//     res.send('k')
+// });
 
 app.get('/moveUsers', function(req, res, next) {
     dataMover.moveUsers()
@@ -402,7 +402,7 @@ app.get('/moveUsers', function(req, res, next) {
 });
 
 app.get('/updateGameScores', function(req, res, next) {
-    dataMover.updateGameScores()
+    dataMover.updateGameScores(req.query.weekNumber)
     res.send('k')
 });
 

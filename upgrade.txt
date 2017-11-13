@@ -1,0 +1,13 @@
+1. Run recreateDB.sql
+2. Run http://localhost:9090/moveUsers
+3. Run http://localhost:9090/startMovePicks
+4. Run http://localhost:9090/updateGameScores?weekNumber=1
+5. Run http://localhost:9090/updateGameScores?weekNumber=2
+6. Run http://localhost:9090/updateGameScores?weekNumber=3
+7. Run http://localhost:9090/updateGameScores?weekNumber=4
+8. Run http://localhost:9090/updateGameScores?weekNumber=5
+9. Run http://localhost:9090/updateGameScores?weekNumber=6
+10. Run http://localhost:9090/updateGameScores?weekNumber=7
+11. Run http://localhost:9090/updateGameScores?weekNumber=8
+12. Run http://localhost:9090/updateGameScores?weekNumber=9
+13. Run http://localhost:9090/updateGameScores?weekNumber=10

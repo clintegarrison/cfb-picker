@@ -6,7 +6,9 @@ const client = new Client()
 client.connect()
 
 function createUser(userName, password, email){
-  executeQuery('INSERT INTO users VALUES($1,$2,$3)', [userName, password, email])
+  executeQuery('INSERT INTO users VALUES($1,$2,$3)', [userName, password, email], function(){
+    
+  })
 }
 
 function createWager(userName, wagerAmount, pickType, callback){
