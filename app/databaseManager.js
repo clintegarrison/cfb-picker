@@ -7,7 +7,7 @@ client.connect()
 
 function createUser(userName, password, email){
   executeQuery('INSERT INTO users VALUES($1,$2,$3)', [userName, password, email], function(){
-    
+
   })
 }
 
@@ -71,6 +71,12 @@ function updateGameScores(gameId, teamOneScore, teamTwoScore, gameStatus, callba
   })
 }
 
+function getUngradedWagers(callback){
+  executeQuery('SELECT g.week_number, g.team_one, g.team_one_score, g.team_two, g.team_two_score, w.wager_amount, w.user_name, w.pick_type as wager_type, p.wager_id, p.pick_type, p.pick_team, p.pick_number, p.pick_number_qualifier FROM games g, wagers w, picks p WHERE p.wager_id = w.wager_id AND p.game_id = g.game_id AND w.wager_status=$1 AND g.game_status=$2 ', ['TBD', 'FINAL'], function(result){
+    callback(result)
+  })
+}
+
 
 
 function executeQuery(sql, args, callback){
@@ -94,7 +100,8 @@ var databaseManager = {
   createPick: createPick,
   authenticateUser: authenticateUser,
   getGamesThatAreNotFinalByWeek: getGamesThatAreNotFinalByWeek,
-  updateGameScores: updateGameScores
+  updateGameScores: updateGameScores,
+  getUngradedWagers: getUngradedWagers
 
 }
 

@@ -1,6 +1,12 @@
 1. Run recreateDB.sql
 2. Run http://localhost:9090/moveUsers
 3. Run http://localhost:9090/startMovePicks
+
+update picks set pick_number=-17 where pick_team='BYU' and week_number=5
+update picks set pick_number=3.5 where pick_team='Mississippi' and week_number=9
+update picks set pick_number=3.5 where pick_team='Texas AM' and pick_type='spread' and week_number=9
+delete from picks where pick_team='South Florida' and week_number=7
+
 4. Run http://localhost:9090/updateGameScores?weekNumber=1
 5. Run http://localhost:9090/updateGameScores?weekNumber=2
 6. Run http://localhost:9090/updateGameScores?weekNumber=3
@@ -11,3 +17,10 @@
 11. Run http://localhost:9090/updateGameScores?weekNumber=8
 12. Run http://localhost:9090/updateGameScores?weekNumber=9
 13. Run http://localhost:9090/updateGameScores?weekNumber=10
+14. Run http://localhost:9090/updateGameScores?weekNumber=11
+15. these queries:
+delete from games where week_number=3 and team_one='Georgia Tech'
+delete from games where week_number=7 and team_one='South Florida'
+update games set team_one_score=35, team_two_score=14, game_status='FINAL' where week_number=10 and team_one='Michigan'
+update games set team_one_score=39, team_two_score=50, game_status='FINAL' where week_number=10 and team_one='West Virginia'
+update games set team_one_score=48, team_two_score=17, game_status='FINAL' where week_number=10 and team_one='Southern Cal'
