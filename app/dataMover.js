@@ -108,12 +108,12 @@ function updateGameScores(weekNumber){
     dbManager.getGamesThatAreNotFinalByWeek(weekNumber, function(notFinalGames){
       for(var i=0; i<notFinalGames.length; i++){
         var nfg = notFinalGames[i]
-        console.log(nfg)
         for(var x=0; x<gameFeed.length; x++){
           var gf = gameFeed[x]
           var gameStatus = 'TBD'
-          // GAME STATUE IS NULL?!
-          if(gf.gameState=='Final Score'){
+
+
+          if(gf.status=='Final Score'){
             gameStatus = 'FINAL'
           }else{
             // console.log('!!!!!STATE!!!!', gameFeed[x])
@@ -153,11 +153,138 @@ function moveUsers(){
   })
 }
 
+function gradePicks(){
+  dbManager.getUngradedWagers(function(results){
+    var formattedWagers = []
+
+    for(var i=0; i<results.length; i++){
+      var result = results[i]
+      if(result.wager_type=='parlay'){
+        formattedWagers.push(formatParlayWager(result, results))
+      }else{
+        formattedWagers.push(formatSingleGameWager(result))
+      }
+    }
+
+    formattedWagers = Array.from( new Set(formattedWagers) );
+
+    console.log('!!!!!!!!!!!!  ', formattedWagers.length)
+
+    for(var i=0; i<formattedWagers.length; i++){
+      var result = gradePick(formattedWagers[i])
+    }
+
+  })
+}
+
+function gradePick(wager){
+  var result = '' // WINNER, LOSER, PUSH
+  if(wager.wagerType=="spread"){
+    result = didSpreadWin(wager)
+  }else if(wager.wagerType=="moneyLine"){
+    result = didMoneyLineWin(wager)
+  }else if(wager.wagerType=="totals"){
+    result = didTotalsWin(wager)
+  }else if(wager.wagerType=="parlay"){
+    var results = []
+    for(var i=0; i<wager.picksAndGames.length; i++){
+      if(wager.wagerType=="spread"){
+        result = didSpreadWin(wager)
+      }else if(wager.wagerType=="moneyLine"){
+        result = didMoneyLineWin(wager)
+      }else if(wager.wagerType=="totals"){
+        result = didTotalsWin(wager)
+      }
+      results.push(result)
+    }
+
+    result = "WINNER"
+    for(var r=0; r<results.length; r++){
+      if(results[r]!="WINNER" || results[r]!="PUSH"){
+        result = "LOSER"
+      }
+    }
+  }
+  return result
+}
+
+function didSpreadWin(wager){
+
+}
+
+function didMoneyLineWin(wager){
+
+}
+
+function didTotalsWin(wager){
+
+}
+
+
+
+function formatParlayWager(pick, picks){
+  var formattedWager = {
+    wagerId : pick.wager_id,
+    wagerType : pick.wager_type,
+    wagerAmount : pick.wager_amount,
+    picksAndGames : []
+  }
+
+  var wagerId = pick.wager_id
+
+  for(var i=0; i<picks.length; i++){
+    var tempPick = picks[i]
+    if(tempPick.wager_id == wagerId){
+      var pickAndGame = {
+        pick : {
+          pickTeam : tempPick.pick_team,
+          pickType : tempPick.pick_type,
+          pickNumber : tempPick.pick_number,
+          pickNumberQualifier : tempPick.pick_number_qualifier
+        },
+        game : {
+          teamOne : tempPick.team_one,
+          teamTwo : tempPick.team_two,
+          teamOneScore : tempPick.team_one_score,
+          teamTwoScore: tempPick.team_two_score
+        }
+      }
+      formattedWager.picksAndGames.push(pickAndGame)
+    }
+  }
+}
+
+function formatSingleGameWager(pick){
+  var formattedWager = {
+    wagerId : pick.wager_id,
+    wagerType : pick.wager_type,
+    wagerAmount : pick.wager_amount,
+    picksAndGames : [
+      {
+        pick : {
+          pickTeam : pick.pick_team,
+          pickType : pick.pick_type,
+          pickNumber : pick.pick_number,
+          pickNumberQualifier : pick.pick_number_qualifier
+        },
+        game : {
+          teamOne : pick.team_one,
+          teamTwo : pick.team_two,
+          teamOneScore : pick.team_one_score,
+          teamTwoScore: pick.team_two_score
+        }
+      }
+    ]
+  }
+  return formattedWager
+}
+
 var dataMover = {
 	movePicks: movePicks,
   moveUsers: moveUsers,
   updateGameScores: updateGameScores,
-  startMovePicks: startMovePicks
+  startMovePicks: startMovePicks,
+  gradePicks: gradePicks
 }
 
 module.exports = dataMover;

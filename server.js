@@ -109,51 +109,51 @@ app.get('/getAllPicks', function(req, res, next) {
   })
 });
 
-// app.get('/cleanupPicks', function(req, res, next) {
-//   redisManager.getUserPicksKeys(function(userPickKeys, error){
-//     var getUserPicksPromises = []
-//     for(var i=0; i<userPickKeys.length; i++){
-//       getUserPicksPromises.push(calc.getAllUserPicks(userPickKeys[i]))
-//     }
-//     Promise.all(getUserPicksPromises).then(function(userPicksArray){
-//       var picksToChange = []
-//       console.log(userPicksArray.length)
-//       for(var x=0; x<userPicksArray.length; x++){
-//         var singleUserPicks = userPicksArray[x]
-//         for(var z=0; z<singleUserPicks.length; z++){
-//           var p = singleUserPicks[z]
-//           if(p.pickType != 'parlay'){
-//             if(p.timestamp.includes("2017-11-11") && p.weekNumber===10){
-//               // console.log(p)
-//               picksToChange.push(p)
-//             }
-//           }else{
-//             if(p.parlays[0].timestamp.includes("2017-11-11") && p.parlays[0].weekNumber===10){
-//               // console.log(p)
-//               picksToChange.push(p)
-//             }
-//           }
-//         }
-//
-//         for(var w=0; w<picksToChange.length; w++){
-//           var key = 'user:' + picksToChange[w].userName + ':picks'
-//           var pick = picksToChange[w]
-//           console.log('removing pick:')
-//           console.log(pick)
-//           redisManager.removeFromList(key, JSON.stringify(pick))
-//
-//           var newPick = picksToChange[w]
-//           newPick.weekNumber=11
-//
-//           console.log(newPick)
-//
-//           redisManager.addToList(key, JSON.stringify(newPick))
-//         }
-//       }
-//       res.send(picksToChange)
-//     })
-//   })
-// });
+app.get('/cleanupPicks', function(req, res, next) {
+  redisManager.getUserPicksKeys(function(userPickKeys, error){
+    var getUserPicksPromises = []
+    for(var i=0; i<userPickKeys.length; i++){
+      getUserPicksPromises.push(calc.getAllUserPicks(userPickKeys[i]))
+    }
+    Promise.all(getUserPicksPromises).then(function(userPicksArray){
+      var picksToChange = []
+      console.log(userPicksArray.length)
+      for(var x=0; x<userPicksArray.length; x++){
+        var singleUserPicks = userPicksArray[x]
+        for(var z=0; z<singleUserPicks.length; z++){
+          var p = singleUserPicks[z]
+          if(p.pickType != 'parlay'){
+            if(p.timestamp.includes("2017-11-18") && p.weekNumber===0){
+              // console.log(p)
+              picksToChange.push(p)
+            }
+          }else{
+            if(p.parlays[0].timestamp.includes("2017-11-18") && p.parlays[0].weekNumber===0){
+              // console.log(p)
+              picksToChange.push(p)
+            }
+          }
+        }
+
+        for(var w=0; w<picksToChange.length; w++){
+          var key = 'user:' + picksToChange[w].userName + ':picks'
+          var pick = picksToChange[w]
+          console.log('removing pick:')
+          console.log(pick)
+          redisManager.removeFromList(key, JSON.stringify(pick))
+
+          var newPick = picksToChange[w]
+          newPick.weekNumber=12
+
+          console.log(newPick)
+
+          redisManager.addToList(key, JSON.stringify(newPick))
+        }
+      }
+      res.send(picksToChange)
+    })
+  })
+});
 
 app.get('/getCredits', function(req, res, next) {
     console.log('testCreds:',req.query)
@@ -389,20 +389,8 @@ app.post('/calculateResults', function(req, res, next) {
 
 
 
-
-
-// app.get('/movePicks', function(req, res, next) {
-//     dataMover.movePicks()
-//     res.send('k')
-// });
-
 app.get('/moveUsers', function(req, res, next) {
     dataMover.moveUsers()
-    res.send('k')
-});
-
-app.get('/updateGameScores', function(req, res, next) {
-    dataMover.updateGameScores(req.query.weekNumber)
     res.send('k')
 });
 
@@ -411,14 +399,18 @@ app.get('/startMovePicks', function(req, res, next) {
     res.send('k')
 });
 
-app.get('/callbackTest', function(req, res, next) {
-    console.log('start')
-    dbManager.executeQueryCallback('select * from games', null, function(result){
-      console.log('cb result:', result)
-    })
-    console.log('end')
+app.get('/updateGameScores', function(req, res, next) {
+    dataMover.updateGameScores(req.query.weekNumber)
     res.send('k')
 });
+
+app.get('/gradePicks', function(req, res, next) {
+    dataMover.gradePicks()
+    res.send('k')
+});
+
+
+
 
 app.all('/*', function(req, res, next) {
     var cookie = req.cookies.authenticatedUser;
