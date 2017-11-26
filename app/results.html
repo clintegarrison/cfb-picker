@@ -7,6 +7,18 @@
 
     <section>
       <md-list layout-padding>
+        <md-subheader class="md-primary">Week Thirteen Results</md-subheader>
+        <md-list-item class="md-3-line" ng-repeat="result in weekThirteenResults">
+          <div class="md-list-item-text" layout="column" ng-class-odd="'odd'" ng-class-even="'even'">
+            <h3 >{{result.userName}} <span data-ng-style="result.creditChange < 0 && {'color':'red'} || result.creditChange > 0 && {'color':'green'}">{{result.creditChange}}</span></h3>
+            <h4 style="white-space: pre-wrap;">{{result.prettyPrint}}</h4>
+          </div>
+        </md-list-item>
+      </md-list>
+    </section>
+
+    <section>
+      <md-list layout-padding>
         <md-subheader class="md-primary">Week Twelve Results</md-subheader>
         <md-list-item class="md-3-line" ng-repeat="result in weekTwelveResults">
           <div class="md-list-item-text" layout="column" ng-class-odd="'odd'" ng-class-even="'even'">

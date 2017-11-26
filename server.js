@@ -123,12 +123,14 @@ app.get('/cleanupPicks', function(req, res, next) {
         for(var z=0; z<singleUserPicks.length; z++){
           var p = singleUserPicks[z]
           if(p.pickType != 'parlay'){
-            if(p.timestamp.includes("2017-11-18") && p.weekNumber===0){
+            //p.timestamp.includes("2017-11-19") &&
+            if(p.weekNumber===0){
               // console.log(p)
               picksToChange.push(p)
             }
           }else{
-            if(p.parlays[0].timestamp.includes("2017-11-18") && p.parlays[0].weekNumber===0){
+            //.parlays[0].timestamp.includes("2017-11-19")
+            if(p.parlays[0].weekNumber===0){
               // console.log(p)
               picksToChange.push(p)
             }
@@ -143,7 +145,7 @@ app.get('/cleanupPicks', function(req, res, next) {
           redisManager.removeFromList(key, JSON.stringify(pick))
 
           var newPick = picksToChange[w]
-          newPick.weekNumber=12
+          newPick.weekNumber=13
 
           console.log(newPick)
 
