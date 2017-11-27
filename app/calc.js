@@ -438,7 +438,7 @@ var getCurrentWeek = function(){
       break;
     }
   }
-  return 14
+  return 13
 }
 
 var calculateCreditChange = function(result){
