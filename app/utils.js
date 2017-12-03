@@ -50,7 +50,7 @@ function getCurrentWeek(){
       break;
     }
   }
-  return 12
+  return 15
 }
 
 var utils = {
