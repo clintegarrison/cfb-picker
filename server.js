@@ -123,19 +123,15 @@ app.get('/cleanupPicks', function(req, res, next) {
         for(var z=0; z<singleUserPicks.length; z++){
           var p = singleUserPicks[z]
           if(p.pickType != 'parlay'){
-            //p.timestamp.includes("2017-11-19") &&
-            if(p.weekNumber===0){
-              // console.log(p)
+            if(p.weekNumber===14 && !p.gameTime.includes("12/02") && !p.gameTime.includes("12/01")){
+              console.log(p)
               picksToChange.push(p)
             }
           }else{
-            //.parlays[0].timestamp.includes("2017-11-19")
-            if(p.parlays[0].weekNumber===0){
-              // console.log(p)
-              picksToChange.push(p)
-            }else if(p.weekNumber===0){
-              picksToChange.push(p)
-            }
+            // if(p.weekNumber===14){
+            //   console.log(p)
+            //   picksToChange.push(p)
+            // }
           }
         }
 
@@ -144,16 +140,17 @@ app.get('/cleanupPicks', function(req, res, next) {
           var pick = picksToChange[w]
           console.log('removing pick:')
           console.log(pick)
-          // redisManager.removeFromList(key, JSON.stringify(pick))
-          //
-          // var newPick = picksToChange[w]
-          // newPick.weekNumber=13
-          //
-          // console.log(newPick)
-          //
-          // redisManager.addToList(key, JSON.stringify(newPick))
+          redisManager.removeFromList(key, JSON.stringify(pick))
+
+          var newPick = picksToChange[w]
+          newPick.weekNumber=15
+
+          console.log(newPick)
+
+          redisManager.addToList(key, JSON.stringify(newPick))
         }
       }
+      console.log(picksToChange.length)
       res.send(picksToChange)
     })
   })
